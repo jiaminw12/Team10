@@ -55,7 +55,7 @@ CREATE TABLE team10.OrderLine (
     OL_SUPPLY_W_ID int,
     OL_QUANTITY decimal,
     OL_DIST_INFO text,
-    PRIMARY KEY ((O_W_ID, O_D_ID, O_C_ID), O_ID)
+    PRIMARY KEY ((O_W_ID, O_D_ID), O_ID)
 ) WITH CLUSTERING ORDER BY (O_ID ASC);
 
 CREATE TABLE team10.StockItem (
