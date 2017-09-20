@@ -61,9 +61,6 @@ CREATE TABLE team10.OrderLine (
 CREATE TABLE team10.StockItem (
     S_W_ID int,
     S_I_ID int,
-    I_PRICE decimal,
-    I_IM_ID int,
-    I_DATA text,
     S_YTD decimal,
     S_ORDER_CNT int,
     S_REMOTE_CNT int,
@@ -78,6 +75,9 @@ CREATE TABLE team10.StockItem (
     S_DIST_09 text,
     S_DIST_10 text,
     S_DATA text,
+    I_PRICE decimal,
+    I_IM_ID int,
+    I_DATA text,
     PRIMARY KEY ((S_W_ID), S_I_ID)
 );
 
