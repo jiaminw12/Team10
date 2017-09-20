@@ -25,15 +25,17 @@ session = cluster.connect('team10')
 
 cluster.register_user_type('team10', 'address', Address)
 
-insert_statement = session.prepare("INSERT INTO warehouse (w_id, w_name, w_address, w_tax, w_ytd) VALUES (?, ?, ?, ?, ?)")
+insert_statement = session.prepare("INSERT INTO district (d_w_id, d_id, d_name, d_address, d_tax, d_ytd, d_next_o_id) VALUES (?, ?, ?, ?, ?, ?, ?)")
 
-for row in getdata('../data-files/warehouse.csv'):
+for row in getdata('../data-files/district.csv'):
     
-    w_id = int(row[0])
-    w_tax = Decimal(row[7])
-    w_ytd = Decimal(row[8])
+    d_w_id = int(row[0])
+    d_id = int(row[1])
+    d_tax = Decimal(row[8])
+    d_ytd = Decimal(row[9])
+    d_next_o_id = int(row[10])
     
-    session.execute(insert_statement, [w_id, row[1], Address(row[2], row[3], row[4], row[5], row[6]), w_tax, w_ytd])
+    session.execute(insert_statement, [d_w_id, d_id, row[2], Address(row[3], row[4], row[5], row[6], row[7]), d_tax, d_ytd, d_next_o_id])
 
 cluster.shutdown();
 
