@@ -28,6 +28,11 @@ cluster.register_user_type('team10', 'address', Address)
 
 insert_statement = session.prepare("INSERT INTO payment_by_customer (c_w_id, c_d_id, c_id, c_address, c_balance, c_credit, c_credit_lim, c_data, c_delivery_cnt, c_discount, c_first, c_last, c_middle, c_payment_cnt, c_phone, c_since, c_ytd_payment, d_address, w_address) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
 
+update_warehouseAddr_statement = session.prepare("UPDATE payment_by_customer SET w_address = ? WHERE c_w_id = ? AND c_d_id IN (1,2,3,4,5,6,7,8,9,10) AND c_id = ?");
+
+update_districtAddr_statement = session.prepare("UPDATE payment_by_customer SET d_address = ? WHERE c_w_id = ? AND c_d_id =? AND c_id = ?");
+
+print("Inserting Customer data ... ")
 for row in getdata('../data-files/customer.csv'):
     
     c_w_id = int(row[0])
@@ -41,7 +46,31 @@ for row in getdata('../data-files/customer.csv'):
     c_since = datetime.strptime(row[12], '%Y-%m-%d %H:%M:%S.%f')
     c_ytd_payment = Decimal(row[17])
     
-    session.execute(insert_statement, [c_w_id, c_d_id, c_id, Address(row[6], row[7], row[8], row[9], row[10]), c_balance, row[13], c_credit_lim, row[20], c_delivery_cnt, c_discount, row[3], row[5], row[4], c_payment_cnt, row[11], c_since, c_ytd_payment, 'null', 'null'])
+    session.execute(insert_statement, [c_w_id, c_d_id, c_id, Address(row[6], row[7], row[8], row[9], row[10]), c_balance, row[13], c_credit_lim, row[20], c_delivery_cnt, c_discount, row[3], row[5], row[4], c_payment_cnt, row[11], c_since, c_ytd_payment, Address('null', 'null', 'null', 'null', 'null'), Address('null', 'null', 'null', 'null', 'null')])
+print("Inserting Done ... ")
+
+
+print("Inserting Warehouse Address data ... ")
+for row in getdata('../data-files/warehouse.csv'):
+    for x in range (1, 3000):
+        
+        c_w_id = int(row[0])
+        c_id = x
+        
+        session.execute(update_warehouseAddr_statement, [Address(row[2], row[3], row[4], row[5], row[6]), c_w_id, c_id])
+print("Done ... ")
+
+
+print("Inserting District Address data ... ")
+for row in getdata('../data-files/district.csv'):
+    for x in range (1, 3000):
+        
+        d_w_id = int(row[0])
+        d_id = int(row[1])
+        c_id = x
+        
+        session.execute(update_districtAddr_statement, [Address(row[3], row[4], row[5], row[6], row[7]), d_w_id, d_id, c_id])
+print("Done ... ")
 
 
 cluster.shutdown();
