@@ -1,11 +1,13 @@
 DROP MATERIALIZED VIEW IF EXISTS team10.Top_Balance;
 DROP TABLE IF EXISTS team10.Warehouse;
 DROP TABLE IF EXISTS team10.District;
+
+DROP MATERIALIZED VIEW IF EXISTS team10.Delivery_by_Customer;
 DROP TABLE IF EXISTS team10.OrderLine;
+
 DROP TABLE IF EXISTS team10.StockItem;
 DROP TABLE IF EXISTS team10.Payment_by_Customer;
 DROP TABLE IF EXISTS team10.Item_by_Warehouse_District;
-DROP TABLE IF EXISTS team10.Delivery_by_Customer;
 
 DROP KEYSPACE IF EXISTS team10;
 
@@ -51,12 +53,23 @@ CREATE TABLE team10.OrderLine (
     O_ENTRY_D timestamp,
     OL_NUMBER int,
     OL_I_ID int,
+    OL_DELIVERY_D timestamp,
     OL_AMOUNT decimal,
     OL_SUPPLY_W_ID int,
     OL_QUANTITY decimal,
     OL_DIST_INFO text,
-    PRIMARY KEY ((O_W_ID, O_D_ID), O_ID)
+    PRIMARY KEY ((O_W_ID, O_D_ID), O_ID, OL_NUMBER)
 ) WITH CLUSTERING ORDER BY (O_ID ASC);
+
+CREATE MATERIALIZED VIEW IF NOT EXISTS team10.Delivery_by_Customer AS
+    SELECT O_W_ID, O_D_ID, O_ID, O_C_ID, O_CARRIER_ID, OL_DELIVERY_D, OL_AMOUNT, O_ENTRY_D, OL_QUANTITY, OL_SUPPLY_W_ID, OL_I_ID
+    FROM team10.OrderLine
+    WHERE O_W_ID IS NOT NULL
+    AND O_D_ID IS NOT NULL
+    AND O_ID IS NOT NULL
+    AND OL_NUMBER IS NOT NULL
+    PRIMARY KEY (O_W_ID, O_D_ID, O_ID, OL_NUMBER)
+WITH CLUSTERING ORDER BY (O_ID DESC);
 
 CREATE TABLE team10.StockItem (
     S_W_ID int,
@@ -127,17 +140,3 @@ CREATE TABLE team10.Item_by_Warehouse_District (
     PRIMARY KEY (W_ID, D_ID, I_ID)
 ) WITH CLUSTERING ORDER BY (D_ID ASC, I_ID ASC);
 
-CREATE TABLE team10.Delivery_by_Customer (
-    W_ID int,
-    O_ID int,
-    D_ID int,
-    C_ID int,
-    O_CARRIER_ID int,
-    OL_DELIVERY_ID timestamp,
-    OL_AMOUNT decimal,
-    O_ENTRY_ID int,
-    OL_QUANTITY decimal,
-    OL_SUPPLY_W_ID int,
-    OL_I_ID int,
-    PRIMARY KEY (W_ID, O_ID, D_ID, C_ID)
-) WITH CLUSTERING ORDER BY (O_ID DESC);
