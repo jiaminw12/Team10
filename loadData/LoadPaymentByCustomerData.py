@@ -52,7 +52,7 @@ print("Inserting Done ... ")
 
 print("Inserting Warehouse Address data ... ")
 for row in getdata('../data-files/warehouse.csv'):
-    for x in range (1, 3000):
+    for x in range (1, 3001):
         
         c_w_id = int(row[0])
         c_id = x
@@ -63,7 +63,7 @@ print("Done ... ")
 
 print("Inserting District Address data ... ")
 for row in getdata('../data-files/district.csv'):
-    for x in range (1, 3000):
+    for x in range (1, 3001):
         
         d_w_id = int(row[0])
         d_id = int(row[1])

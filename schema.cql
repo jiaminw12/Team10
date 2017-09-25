@@ -129,14 +129,14 @@ WITH CLUSTERING ORDER BY (C_BALANCE DESC);
 
 CREATE TABLE team10.Item_by_Warehouse_District (
     W_ID int,
-    D_ID int,
     I_ID int,
+    D_ID int,
     I_PRICE decimal,
     I_NAME text,
     W_TAX decimal,
     D_TAX decimal,
     D_NEXT_O_ID int,
     S_QUANTITY decimal,
-    PRIMARY KEY (W_ID, D_ID, I_ID)
-) WITH CLUSTERING ORDER BY (D_ID ASC, I_ID ASC);
+    PRIMARY KEY (W_ID, I_ID, D_ID)
+) WITH CLUSTERING ORDER BY (I_ID ASC, D_ID ASC);
 
