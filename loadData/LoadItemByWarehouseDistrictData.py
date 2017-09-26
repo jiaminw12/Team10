@@ -21,7 +21,7 @@ for i in range (1, 100001):
 
 
 # stock
-update_stock_statement = session.prepare("UPDATE item_by_warehouse_district SET s_quantity = ? WHERE w_id = ? AND i_id = ? AND d_id IN (1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16)");
+update_stock_statement = session.prepare("UPDATE item_by_warehouse_district SET s_quantity = ? WHERE w_id = ? AND i_id = ? AND d_id IN (1,2,3,4,5,6,7,8,9,10)");
 
 print("Updating Stock data ... ")
 for row in getdata('../data-files/stock.csv'):
@@ -36,7 +36,7 @@ print("Inserting Done ... ")
 
 
 # item
-update_item_statement = session.prepare("UPDATE item_by_warehouse_district SET i_name = ?, i_price = ? WHERE w_id IN (1,2,3,4,5,6,7,8,9,10) AND d_id IN (1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16) AND i_id = ?");
+update_item_statement = session.prepare("UPDATE item_by_warehouse_district SET i_name = ?, i_price = ? WHERE w_id IN (1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16) AND d_id IN (1,2,3,4,5,6,7,8,9,10) AND i_id = ?");
 
 print("Updating Item data ... ")
 for row in getdata('../data-files/item.csv'):
