@@ -20,7 +20,7 @@ session = cluster.connect('team10')
 
 select_statement = session.prepare("SELECT count(ol_number) AS count FROM orderline WHERE o_w_id = ? AND o_d_id = ? AND o_id = ?");
 
-print("Updating OderLine data ... ")
+print("Updating OrderLine data ... ")
 for row in getdata('../data-files/order.csv'):
 
     o_c_id = int(row[3])
