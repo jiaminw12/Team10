@@ -21,7 +21,6 @@ session = cluster.connect('team10')
 select_statement = session.prepare("SELECT count(ol_number) AS count FROM orderline WHERE o_w_id = ? AND o_d_id = ? AND o_id = ?");
 
 print("Updating OderLine data ... ")
-#start_time = time.time()
 for row in getdata('../data-files/order.csv'):
 
     o_c_id = int(row[3])
@@ -49,8 +48,8 @@ for row in getdata('../data-files/order.csv'):
 
     session.execute(update_statement, [o_c_id, o_all_local, o_carrier_id, o_entry_d, o_ol_cnt, o_w_id, o_d_id, o_id])
 
-#print("--- %s seconds ---" % round(time.time() - start_time, 10))
 print("Updating Done ... ")
+
 
 cluster.shutdown();
 
