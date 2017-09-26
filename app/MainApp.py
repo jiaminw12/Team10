@@ -40,26 +40,64 @@ topBalanceXact = 'T'
 Connect['team10']
 session = Connect.getSession()
 
-for row in getdata('../xact-files/%2$s.txt'):
-    strArray = row.split(',')
+#for row in getdata('../xact-files/%2$s.txt'):
+ with open('../xact-files/%2$s.txt', 'r+') as myFile:
+    lines = myFile.readlines()
+    
+    for i in range(0, len(lines)):
+        line = lines[i]
+        str = line.split(',')
 
-    if str[0] == 'N'
-        newOrder(strArray);
-    elif str[0] == 'P'
-        payment(strArray);
-    elif str[0] == 'D'
-        delivery(strArray);
-    elif str[0] == 'O'
-        orderStatus(strArray);
-    elif str[0] == 'S'
-        stockLevel(strArray);
-    elif str[0] == 'I'
-        payment(strArray);
-    elif str[0] == 'T'
-        popularItem(strArray);
+        if str[0] == 'N':
+            w_id = str[1];
+            d_id = str[2];
+            c_id = str[3];
+            needToRead = str[4] #Num of lines needed to read
+            
+            newOrderList = []
+            for j in range(0, needToRead):
+                newOrderList.append(lines[i+j+1]);
+                
+            newOrder(w_id, d_id, c_id, newOrderList);
+        elif str[0] == 'P':
+            c_w_id = str[1];
+            c_d_id = str[2];
+            c_id = str[3];
+            amount = str[4];
+            
+            payment(c_w_id, c_d_id, c_id, amount);
+            
+        elif str[0] == 'D':
+             w_id = str[1];
+             carrier_id = str[2];
+             delivery(w_id, carrier_id);
+                
+        elif str[0] == 'O':
+            c_w_id = str[1];
+            c_d_id = str[2];
+            c_id = str[3];
+            
+            orderStatus(c_w_id, c_d_id, c_id);
+            
+        elif str[0] == 'S':
+            w_id = str[1];
+            d_id = str[2];
+            threshold = str[3];
+            numLastOrders = str[4];
+            
+            stockLevel(w_id, d_id, threshold, numLastOrders);
+            
+        elif str[0] == 'I':
+            w_id = str[1];
+            d_id = str[2];
+            numLastOrders = str[3];
+            popularItem(w_id, d_id, numLastOrders);
+            
+        elif str[0] == 'T':
+            topBalance();
 
 # New Order Transaction
-def newOrder(strArray):
+def newOrder(w_id, d_id, c_id, newOrderList):
     w_id = int(strArray[1])
     d_id = int(strArray[2])
     c_id = int(strArray[3])
@@ -72,7 +110,7 @@ def newOrder(strArray):
     NewOrderTransaction.process()
 
 
-def payment(strArray):
+def payment(c_w_id, c_d_id, c_id, amount):
     c_w_id = int(strArray[1])
     c_d_id = int(strArray[2])
     c_id = int(strArray[3])
@@ -82,7 +120,7 @@ def payment(strArray):
     PaymentTransaction.process()
 
 
-def delivery(strArray):
+def delivery(w_id, carrier_id):
     w_id = int(strArray[1])
     carrier_id = int(strArray[2])
 
@@ -90,7 +128,7 @@ def delivery(strArray):
     DeliveryTransaction.process()
 
 
-def orderStatus(strArray):
+def orderStatus(c_w_id, c_d_id, c_id):
     c_w_id = int(strArray[1])
     c_d_id = int(strArray[2])
     c_id = int(strArray[3])
@@ -99,7 +137,7 @@ def orderStatus(strArray):
     OrderStatusTransaction.process()
 
 
-def stockLevel(strArray):
+def stockLevel((w_id, d_id, threshold, numLastOrders)):
     w_id = int(strArray[1])
     d_id = int(strArray[2])
     stockThreshold = int(strArray[3])
@@ -109,7 +147,7 @@ def stockLevel(strArray):
     StockLevelTransaction.process()
 
 
-def popularItem(strArray):
+def popularItem(w_id, d_id, numLastOrders):
     w_id = int(strArray[1])
     d_id = int(strArray[2])
     numOfLastOrder = int(strArray[3])
@@ -118,7 +156,7 @@ def popularItem(strArray):
     PopularItemTransaction.process()
 
 
-def topBalance(strArray):
+def topBalance():
     TopBalanceTransaction()
     TopBalanceTransaction.process()
 
