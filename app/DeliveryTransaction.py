@@ -9,7 +9,7 @@ class DeliveryTransaction(object):
         self.carrier_id = carrier_id
     
     def process(self):
-
+    # Need to update/insert record orderline & delivery_by_customer when is related to order or orderline
 
 
 
