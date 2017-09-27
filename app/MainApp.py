@@ -37,7 +37,7 @@ popularItemXact = 'I'
 topBalanceXact = 'T'
 
 # Connect Keyspace
-Connect['team10']
+Connect('team10')
 session = Connect.getSession()
 
 #for row in getdata('../xact-files/%2$s.txt'):
