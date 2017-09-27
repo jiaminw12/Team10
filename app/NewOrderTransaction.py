@@ -19,16 +19,25 @@ class NewOrderTransaction():
 
     def initPreparedStmts(self):
         
-        self.update_district_stmt = self.session.prepare("UPDATE district SET d_next_o_id = d_next_o_id + 1 WHERE d_w_id = ? AND d_id = ?");
-        self.update_item_by_warehouse_district_stmt = self.session.prepare("UPDATE item_by_warehouse_district SET d_next_o_id = d_next_o_id + 1 WHERE w_id = ? AND d_id = ? AND i_id = ?");
+        #self.update_district_stmt = self.session.prepare("UPDATE district SET d_next_o_id = d_next_o_id + 1 WHERE d_w_id = ? AND d_id = ?");
+        #self.update_item_by_warehouse_district_stmt = self.session.prepare("UPDATE item_by_warehouse_district SET d_next_o_id = d_next_o_id + 1 WHERE w_id = ? AND d_id = ? AND i_id = ?");
+		
+		self.select_next_oid_district = self.session.prepare("SELECT d_next_o_id FROM district where w_id = ? AND d_id = ?");
+	
+		self.update_next_oid_district = self.session.prepare("UPDATE district SET d_next_o_id = ? where w_id = ? AND d_id = ?");
     
-    def process(self):
+	def process(self):
         
-        
+        self.incrementNextOrderId();
     
     # Increment d_next_o_id by 1 in table DISTRICT and ITEM_BY_WAREHOUSE_DISTRICT
     def incrementNextOrderId(self):
-        self.session.execute()
+        rows = self.session.execute(self.select_next_oid_district, (self.w_id, self.d_id));
+		
+		self.d_next_o_id = int(rows[0]) + 1;
+		
+		self.session.execute(self.update_next_oid_district, (self.d_next_o_id, self.w_id, self.d_id));
+		
         
     # Need to update/insert record orderline & delivery_by_customer when is related to order or orderline
 
