@@ -97,7 +97,7 @@ session = Connect.getSession()
             topBalance();
 
 # New Order Transaction
-def newOrder(w_id, d_id, c_id, newOrderList):
+def newOrder(session, w_id, d_id, c_id, newOrderList):
 	
 	num_items = len(newOrderList);
 	i_id_list = [];
@@ -114,7 +114,7 @@ def newOrder(w_id, d_id, c_id, newOrderList):
 	NewOrderTransaction.process();
 
 
-def payment(c_w_id, c_d_id, c_id, amount):
+def payment(session, c_w_id, c_d_id, c_id, amount):
     c_w_id = int(strArray[1])
     c_d_id = int(strArray[2])
     c_id = int(strArray[3])
@@ -124,7 +124,7 @@ def payment(c_w_id, c_d_id, c_id, amount):
     PaymentTransaction.process()
 
 
-def delivery(w_id, carrier_id):
+def delivery(session, w_id, carrier_id):
     w_id = int(strArray[1])
     carrier_id = int(strArray[2])
 
@@ -132,7 +132,7 @@ def delivery(w_id, carrier_id):
     DeliveryTransaction.process()
 
 
-def orderStatus(c_w_id, c_d_id, c_id):
+def orderStatus(session, c_w_id, c_d_id, c_id):
     c_w_id = int(strArray[1])
     c_d_id = int(strArray[2])
     c_id = int(strArray[3])
@@ -141,7 +141,7 @@ def orderStatus(c_w_id, c_d_id, c_id):
     OrderStatusTransaction.process()
 
 
-def stockLevel((w_id, d_id, threshold, numLastOrders)):
+def stockLevel(session, w_id, d_id, threshold, numLastOrders):
     w_id = int(strArray[1])
     d_id = int(strArray[2])
     stockThreshold = int(strArray[3])
@@ -151,7 +151,7 @@ def stockLevel((w_id, d_id, threshold, numLastOrders)):
     StockLevelTransaction.process()
 
 
-def popularItem(w_id, d_id, numLastOrders):
+def popularItem(session, w_id, d_id, numLastOrders):
     w_id = int(strArray[1])
     d_id = int(strArray[2])
     numOfLastOrder = int(strArray[3])
@@ -160,7 +160,7 @@ def popularItem(w_id, d_id, numLastOrders):
     PopularItemTransaction.process()
 
 
-def topBalance():
+def topBalance(session):
     TopBalanceTransaction()
     TopBalanceTransaction.process()
 
