@@ -49,10 +49,10 @@ session = Connect.getSession()
         str = line.split(',')
 
         if str[0] == newOrderXact:
-            w_id = str[1];
-            d_id = str[2];
-            c_id = str[3];
-            needToRead = str[4] #Num of lines needed to read
+            w_id = int(str[1]);
+            d_id = int(str[2]);
+            c_id = int(str[3]);
+            needToRead = int(str[4]) #Num of lines needed to read
             
             newOrderList = []
             for j in range(0, needToRead):
@@ -98,16 +98,20 @@ session = Connect.getSession()
 
 # New Order Transaction
 def newOrder(w_id, d_id, c_id, newOrderList):
-    w_id = int(strArray[1])
-    d_id = int(strArray[2])
-    c_id = int(strArray[3])
-    num_items = int(strArray[4])
-    item_num[] = int(strArray[5])
-    supplier_warehouse[] = int(strArray[6])
-    quantity[] = Decimal(strArray[7])
-
-    NewOrderTransaction(w_id, d_id, c_id, num_items, item_num, supplier_warehouse, quantity)
-    NewOrderTransaction.process()
+	
+	num_items = len(newOrderList);
+	i_id_list = [];
+	supplier_w_id_list = [];
+	quantity_list = [];
+	
+	for strOrder in newOrderList:
+		orderArray = strOrder.split(',');
+		i_id_list.append(int(orderArray[0]));
+		supplier_w_id_list.append(int(orderArray[1]));
+		quantity_list.append(int(orderArray[2]));
+	
+	NewOrderTransaction(w_id, d_id, c_id, num_items, i_id_list, supplier_w_id_list, quantity_list);
+	NewOrderTransaction.process();
 
 
 def payment(c_w_id, c_d_id, c_id, amount):
