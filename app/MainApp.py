@@ -97,7 +97,7 @@ session = Connect.getSession()
             topBalance();
 
 # New Order Transaction
-def newOrder(session, w_id, d_id, c_id, newOrderList):
+def newOrder(w_id, d_id, c_id, newOrderList):
 	
 	num_items = len(newOrderList);
 	i_id_list = [];
@@ -110,44 +110,44 @@ def newOrder(session, w_id, d_id, c_id, newOrderList):
 		supplier_w_id_list.append(int(orderArray[1]));
 		quantity_list.append(int(orderArray[2]));
 	
-	NewOrderTransaction(w_id, d_id, c_id, num_items, i_id_list, supplier_w_id_list, quantity_list);
+	NewOrderTransaction(session, w_id, d_id, c_id, num_items, i_id_list, supplier_w_id_list, quantity_list);
 	NewOrderTransaction.process();
 
 
-def payment(session, c_w_id, c_d_id, c_id, amount):
+def payment(c_w_id, c_d_id, c_id, amount):
     c_w_id = int(strArray[1])
     c_d_id = int(strArray[2])
     c_id = int(strArray[3])
     payment = Decimal(strArray[4])
 
-    PaymentTransaction(c_w_id, c_d_id, c_id, payment)
+    PaymentTransaction(session, c_w_id, c_d_id, c_id, payment)
     PaymentTransaction.process()
 
 
-def delivery(session, w_id, carrier_id):
+def delivery(w_id, carrier_id):
     w_id = int(strArray[1])
     carrier_id = int(strArray[2])
 
-    DeliveryTransaction(w_id, carrier_id)
+    DeliveryTransaction(session,w_id, carrier_id)
     DeliveryTransaction.process()
 
 
-def orderStatus(session, c_w_id, c_d_id, c_id):
+def orderStatus(c_w_id, c_d_id, c_id):
     c_w_id = int(strArray[1])
     c_d_id = int(strArray[2])
     c_id = int(strArray[3])
 
-    OrderStatusTransaction(c_w_id, c_d_id, c_id)
+    OrderStatusTransaction(session, c_w_id, c_d_id, c_id)
     OrderStatusTransaction.process()
 
 
-def stockLevel(session, w_id, d_id, threshold, numLastOrders):
+def stockLevel( w_id, d_id, threshold, numLastOrders):
     w_id = int(strArray[1])
     d_id = int(strArray[2])
     stockThreshold = int(strArray[3])
     numOfLastOrder = int(strArray[4])
 
-    StockLevelTransaction(w_id, d_id, stockThreshold, numOfLastOrder)
+    StockLevelTransaction(session, w_id, d_id, stockThreshold, numOfLastOrder)
     StockLevelTransaction.process()
 
 
@@ -156,12 +156,12 @@ def popularItem(session, w_id, d_id, numLastOrders):
     d_id = int(strArray[2])
     numOfLastOrder = int(strArray[3])
 
-    PopularItemTransaction(w_id, d_id, numOfLastOrder)
+    PopularItemTransaction(session,w_id, d_id, numOfLastOrder)
     PopularItemTransaction.process()
 
 
-def topBalance(session):
-    TopBalanceTransaction()
+def topBalance():
+    TopBalanceTransaction(session)
     TopBalanceTransaction.process()
 
 
