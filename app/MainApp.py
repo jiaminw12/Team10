@@ -33,7 +33,7 @@ paymentXact = 'P'
 deliveryXact = 'D'
 orderStatusXact = 'O'
 stockLevelXact = 'S'
-popularItemXact = 'I
+popularItemXact = 'I'
 topBalanceXact = 'T'
 
 # Connect Keyspace
@@ -48,7 +48,7 @@ session = Connect.getSession()
         line = lines[i]
         str = line.split(',')
 
-        if str[0] == 'N':
+        if str[0] == newOrderXact:
             w_id = str[1];
             d_id = str[2];
             c_id = str[3];
@@ -59,7 +59,7 @@ session = Connect.getSession()
                 newOrderList.append(lines[i+j+1]);
                 
             newOrder(w_id, d_id, c_id, newOrderList);
-        elif str[0] == 'P':
+        elif str[0] == paymentXact:
             c_w_id = str[1];
             c_d_id = str[2];
             c_id = str[3];
@@ -67,19 +67,19 @@ session = Connect.getSession()
             
             payment(c_w_id, c_d_id, c_id, amount);
             
-        elif str[0] == 'D':
+        elif str[0] == deliveryXact:
              w_id = str[1];
              carrier_id = str[2];
              delivery(w_id, carrier_id);
                 
-        elif str[0] == 'O':
+        elif str[0] == orderStatusXact:
             c_w_id = str[1];
             c_d_id = str[2];
             c_id = str[3];
             
             orderStatus(c_w_id, c_d_id, c_id);
             
-        elif str[0] == 'S':
+        elif str[0] == stockLevelXact:
             w_id = str[1];
             d_id = str[2];
             threshold = str[3];
@@ -87,13 +87,13 @@ session = Connect.getSession()
             
             stockLevel(w_id, d_id, threshold, numLastOrders);
             
-        elif str[0] == 'I':
+        elif str[0] == popularItemXact:
             w_id = str[1];
             d_id = str[2];
             numLastOrders = str[3];
             popularItem(w_id, d_id, numLastOrders);
             
-        elif str[0] == 'T':
+        elif str[0] == topBalanceXact:
             topBalance();
 
 # New Order Transaction
