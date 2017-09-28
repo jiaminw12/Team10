@@ -27,6 +27,7 @@ cluster.register_user_type('team10', 'address', Address)
 
 insert_statement = session.prepare("INSERT INTO warehouse (w_id, w_name, w_address, w_tax, w_ytd) VALUES (?, ?, ?, ?, ?)")
 
+print("Inserting Warehouse data ... ")
 for row in getdata('../data-files/warehouse.csv'):
     
     w_id = int(row[0])
@@ -35,6 +36,7 @@ for row in getdata('../data-files/warehouse.csv'):
     
     session.execute(insert_statement, [w_id, row[1], Address(row[2], row[3], row[4], row[5], row[6]), w_tax, w_ytd])
 
+print("Inserting Done ... ")
 cluster.shutdown();
 
 

@@ -73,6 +73,6 @@ for row in getdata('../data-files/district.csv'):
     d_next_o_id = int(row[10])
     
     session.execute(update_district_statement, [d_next_o_id, d_tax, d_w_id, d_id])
-print("Inserting Done ... ")
+print("Updating Done ... ")
 
 cluster.shutdown();

@@ -11,16 +11,30 @@
 #       Project (Team10-Cassandra) is in home directory
 #		cqlsh is within /temp/Cassandra/bin directory
 
-cd ~/Team10
-wget http://www.comp.nus.edu.sg/~cs4224/4224-project-files.zip
-unzip 4224-project-files.zip
 
-cd 4224-project-files
-mv data-files ~/Team10/
-mv xact-files ~/Team10/
-cd ..
-rm -Rf 4224-project-files
-rm -Rf 4224-project-files.zip
+declare -r DATA_FOLDER="data-files"
+declare -r XACT_FOLDER="xact-files"
+
+cd ~/Team10
+
+echo -ne "Checking whether data and xact folder exist...\n"
+if [ -d $DATA_FOLDER ];
+then
+    echo -ne "yes\n"
+else
+    echo -ne "Downloading 4224-project-files...\n"
+    wget http://www.comp.nus.edu.sg/~cs4224/4224-project-files.zip
+    unzip 4224-project-files.zip
+
+    cd 4224-project-files
+    mv data-files ~/Team10/
+    mv xact-files ~/Team10/
+    cd ..
+    rm -Rf 4224-project-files
+    rm -Rf 4224-project-files.zip
+    echo -ne "Done...\n"
+fi
+
 
 # Bulk load data
 cd /temp/apache-cassandra-3.11.0/bin
