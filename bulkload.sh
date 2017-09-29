@@ -20,7 +20,7 @@ cd ~/Team10
 echo -ne "Checking whether data and xact folder exist...\n"
 if [ -d $DATA_FOLDER ];
 then
-    echo -ne "yes\n"
+    echo -ne "yes"
 else
     echo -ne "Downloading 4224-project-files...\n"
     wget http://www.comp.nus.edu.sg/~cs4224/4224-project-files.zip

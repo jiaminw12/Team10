@@ -47,47 +47,26 @@ def newOrder(w_id, d_id, c_id, newOrderList):
 
 
 def payment(c_w_id, c_d_id, c_id, amount):
-    c_w_id = int(strArray[1])
-    c_d_id = int(strArray[2])
-    c_id = int(strArray[3])
-    payment = Decimal(strArray[4])
-
     paymentTransaction = PaymentTransaction(session, c_w_id, c_d_id, c_id, payment)
     paymentTransaction.process()
 
 
 def delivery(w_id, carrier_id):
-    w_id = int(strArray[1])
-    carrier_id = int(strArray[2])
-
     deliveryTransaction = DeliveryTransaction(session,w_id, carrier_id)
     deliveryTransaction.process()
 
 
 def orderStatus(c_w_id, c_d_id, c_id):
-    c_w_id = int(strArray[1])
-    c_d_id = int(strArray[2])
-    c_id = int(strArray[3])
-
     orderStatusTransaction = OrderStatusTransaction(session, c_w_id, c_d_id, c_id)
     orderStatusTransaction.process()
 
 
 def stockLevel( w_id, d_id, threshold, numLastOrders):
-    w_id = int(strArray[1])
-    d_id = int(strArray[2])
-    stockThreshold = int(strArray[3])
-    numOfLastOrder = int(strArray[4])
-
     stockLevelTransaction =StockLevelTransaction(session, w_id, d_id, stockThreshold, numOfLastOrder)
     stockLevelTransaction.process()
 
 
 def popularItem(session, w_id, d_id, numLastOrders):
-    w_id = int(strArray[1])
-    d_id = int(strArray[2])
-    numOfLastOrder = int(strArray[3])
-
     popularItemTransaction = PopularItemTransaction(session,w_id, d_id, numOfLastOrder)
     popularItemTransaction.process()
 
@@ -167,16 +146,3 @@ with open(filePath, 'r+') as myFile:
             
         elif str[0] == topBalanceXact:
             topBalance();
-
-
-
-
-
-
-
-
-
-
-
-
-

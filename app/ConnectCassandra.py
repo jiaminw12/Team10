@@ -14,18 +14,23 @@ class Address(object):
         self.state = state
         self.zip = zip
 
+
 class Connect(object):
+    
+    global session;
+    global cluster;
+    
     def __init__(self, keyspace):
         self.keyspace = keyspace
-        session = cluster.connect(keyspace)
+        self.session = cluster.connect(keyspace)
         cluster.register_user_type(keyspace, 'address', Address)
 
-    def getSession():
-        return session;
+    def getSession(self):
+        return self.session;
 
-    def close():
-        session.shutdown();
-        cluster.shutdown();
+    def close(self):
+        self.session.shutdown();
+        self.cluster.shutdown();
 
 
 
