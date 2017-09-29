@@ -74,6 +74,8 @@ class NewOrderTransaction():
 		self.total_amt = 0;
 		
 		for i in range(0, self.num_items):
+			adjusted_qty = self.s_quantity_list[i] - self.quantity_list[i];
+			adjusted_qty = adjusted_qty if adjusted_qty >= 10 else (adjusted_qty+100);
 			
     # Need to update/insert record orderline & delivery_by_customer when is related to order or orderline
 

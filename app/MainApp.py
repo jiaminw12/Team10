@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import sys
 from decimal import *
 from cassandra.cluster import Cluster
 from ConnectCassandra import Connect
@@ -20,12 +21,81 @@ def getdata(filename):
 
 
 #function - Output Performance Measurement after experiments
-def performanceMeasurement():
+#def performanceMeasurement():
     # for each client
         # (a) report num of executed transactions
         # (b) total transaction execution time (in sec)
         # transaction throughput -> b / a
     # min, avg, max transaction throughputs among NC clients
+
+# New Order Transaction
+def newOrder(w_id, d_id, c_id, newOrderList):
+	
+	num_items = len(newOrderList);
+	i_id_list = [];
+	supplier_w_id_list = [];
+	quantity_list = [];
+	
+	for strOrder in newOrderList:
+		orderArray = strOrder.split(',');
+		i_id_list.append(int(orderArray[0]));
+		supplier_w_id_list.append(int(orderArray[1]));
+		quantity_list.append(int(orderArray[2]));
+	
+	newOrderTransaction = NewOrderTransaction(session, w_id, d_id, c_id, num_items, i_id_list, supplier_w_id_list, quantity_list);
+	newOrderTransaction.process();
+
+
+def payment(c_w_id, c_d_id, c_id, amount):
+    c_w_id = int(strArray[1])
+    c_d_id = int(strArray[2])
+    c_id = int(strArray[3])
+    payment = Decimal(strArray[4])
+
+    paymentTransaction = PaymentTransaction(session, c_w_id, c_d_id, c_id, payment)
+    paymentTransaction.process()
+
+
+def delivery(w_id, carrier_id):
+    w_id = int(strArray[1])
+    carrier_id = int(strArray[2])
+
+    deliveryTransaction = DeliveryTransaction(session,w_id, carrier_id)
+    deliveryTransaction.process()
+
+
+def orderStatus(c_w_id, c_d_id, c_id):
+    c_w_id = int(strArray[1])
+    c_d_id = int(strArray[2])
+    c_id = int(strArray[3])
+
+    orderStatusTransaction = OrderStatusTransaction(session, c_w_id, c_d_id, c_id)
+    orderStatusTransaction.process()
+
+
+def stockLevel( w_id, d_id, threshold, numLastOrders):
+    w_id = int(strArray[1])
+    d_id = int(strArray[2])
+    stockThreshold = int(strArray[3])
+    numOfLastOrder = int(strArray[4])
+
+    stockLevelTransaction =StockLevelTransaction(session, w_id, d_id, stockThreshold, numOfLastOrder)
+    stockLevelTransaction.process()
+
+
+def popularItem(session, w_id, d_id, numLastOrders):
+    w_id = int(strArray[1])
+    d_id = int(strArray[2])
+    numOfLastOrder = int(strArray[3])
+
+    popularItemTransaction = PopularItemTransaction(session,w_id, d_id, numOfLastOrder)
+    popularItemTransaction.process()
+
+
+def topBalance():
+    topBalanceTransaction = TopBalanceTransaction(session)
+    topBalanceTransaction.process()
+
 
 
 newOrderXact = 'N'
@@ -37,11 +107,13 @@ popularItemXact = 'I'
 topBalanceXact = 'T'
 
 # Connect Keyspace
-Connect('team10')
-session = Connect.getSession()
+connect = Connect('team10')
+session = connect.getSession()
 
 #for row in getdata('../xact-files/%2$s.txt'):
- with open('../xact-files/%2$s.txt', 'r+') as myFile:
+filePath = '../xact-files/%s' % sys.argv[1];
+
+with open(filePath, 'r+') as myFile:
     lines = myFile.readlines()
     
     for i in range(0, len(lines)):
@@ -95,75 +167,6 @@ session = Connect.getSession()
             
         elif str[0] == topBalanceXact:
             topBalance();
-
-# New Order Transaction
-def newOrder(w_id, d_id, c_id, newOrderList):
-	
-	num_items = len(newOrderList);
-	i_id_list = [];
-	supplier_w_id_list = [];
-	quantity_list = [];
-	
-	for strOrder in newOrderList:
-		orderArray = strOrder.split(',');
-		i_id_list.append(int(orderArray[0]));
-		supplier_w_id_list.append(int(orderArray[1]));
-		quantity_list.append(int(orderArray[2]));
-	
-	NewOrderTransaction(session, w_id, d_id, c_id, num_items, i_id_list, supplier_w_id_list, quantity_list);
-	NewOrderTransaction.process();
-
-
-def payment(c_w_id, c_d_id, c_id, amount):
-    c_w_id = int(strArray[1])
-    c_d_id = int(strArray[2])
-    c_id = int(strArray[3])
-    payment = Decimal(strArray[4])
-
-    PaymentTransaction(session, c_w_id, c_d_id, c_id, payment)
-    PaymentTransaction.process()
-
-
-def delivery(w_id, carrier_id):
-    w_id = int(strArray[1])
-    carrier_id = int(strArray[2])
-
-    DeliveryTransaction(session,w_id, carrier_id)
-    DeliveryTransaction.process()
-
-
-def orderStatus(c_w_id, c_d_id, c_id):
-    c_w_id = int(strArray[1])
-    c_d_id = int(strArray[2])
-    c_id = int(strArray[3])
-
-    OrderStatusTransaction(session, c_w_id, c_d_id, c_id)
-    OrderStatusTransaction.process()
-
-
-def stockLevel( w_id, d_id, threshold, numLastOrders):
-    w_id = int(strArray[1])
-    d_id = int(strArray[2])
-    stockThreshold = int(strArray[3])
-    numOfLastOrder = int(strArray[4])
-
-    StockLevelTransaction(session, w_id, d_id, stockThreshold, numOfLastOrder)
-    StockLevelTransaction.process()
-
-
-def popularItem(session, w_id, d_id, numLastOrders):
-    w_id = int(strArray[1])
-    d_id = int(strArray[2])
-    numOfLastOrder = int(strArray[3])
-
-    PopularItemTransaction(session,w_id, d_id, numOfLastOrder)
-    PopularItemTransaction.process()
-
-
-def topBalance():
-    TopBalanceTransaction(session)
-    TopBalanceTransaction.process()
-
 
 
 
