@@ -15,8 +15,6 @@ class Customer(object):
 
 class TopBalanceTransaction(object):
 
-	global session
-
 	def __init__(self, session):
 		self.session = session
 
