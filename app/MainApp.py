@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import sys
+import time
 from decimal import *
 from cassandra.cluster import Cluster
 from ConnectCassandra import Connect
@@ -19,15 +20,6 @@ def getdata(filename):
 		#content = f.readlines()
 		yield content
 
-
-#function - Output Performance Measurement after experiments
-#def performanceMeasurement():
-# for each client
-# (a) report num of executed transactions
-# (b) total transaction execution time (in sec)
-# transaction throughput -> b / a
-# min, avg, max transaction throughputs among NC clients
-
 # New Order Transaction
 def newOrder(w_id, d_id, c_id, newOrderList):
 	num_items = len(newOrderList);
@@ -41,39 +33,41 @@ def newOrder(w_id, d_id, c_id, newOrderList):
 		supplier_w_id_list.append(int(orderArray[1]));
 		quantity_list.append(int(orderArray[2]));
 
-		newOrderTransaction = NewOrderTransaction(session, w_id, d_id, c_id, num_items, i_id_list, supplier_w_id_list, quantity_list);
-		newOrderTransaction.process();
+	newOrderTransaction = NewOrderTransaction(session, w_id, d_id, c_id, num_items, i_id_list, supplier_w_id_list, quantity_list);
+	newOrderTransaction.process();
 
-
-def payment(c_w_id, c_d_id, c_id, amount):
-	paymentTransaction = PaymentTransaction(session, c_w_id, c_d_id, c_id, payment)
+# Payment Transaction
+def payment(c_w_id, c_d_id, c_id, paymentAmt):
+	paymentTransaction = PaymentTransaction(session, c_w_id, c_d_id, c_id, paymentAmt)
 	paymentTransaction.process()
 
-
+# Delivery Transaction
 def delivery(w_id, carrier_id):
 	deliveryTransaction = DeliveryTransaction(session,w_id, carrier_id)
 	deliveryTransaction.process()
 
-
+# Order-Status Transaction
 def orderStatus(c_w_id, c_d_id, c_id):
 	orderStatusTransaction = OrderStatusTransaction(session, c_w_id, c_d_id, c_id)
 	orderStatusTransaction.process()
 
-
-def stockLevel( w_id, d_id, threshold, numLastOrder):
+# Stock-Level Transaction
+def stockLevel( w_id, d_id, stockThreshold, numLastOrder):
 	stockLevelTransaction =StockLevelTransaction(session, w_id, d_id, stockThreshold, numLastOrder)
 	stockLevelTransaction.process()
 
-
+# Popular-Item
 def popularItem(w_id, d_id, numLastOrder):
 	popularItemTransaction = PopularItemTransaction(session, w_id, d_id, numLastOrder)
 	popularItemTransaction.process()
 
-
+# Top-Balance
 def topBalance():
 	topBalanceTransaction = TopBalanceTransaction(session)
 	topBalanceTransaction.process()
 
+
+numOfExceutedTransaction = 0
 
 newOrderXact = 'N'
 paymentXact = 'P'
@@ -87,39 +81,40 @@ topBalanceXact = 'T'
 connect = Connect('team10')
 session = connect.getSession()
 
-#for row in getdata('../xact-files/%2$s.txt'):
 filePath = '../xact-files/%s' % sys.argv[1];
-
+start_time = time.time()
 with open(filePath, 'r+') as myFile:
 	lines = myFile.readlines()
 
 	for i in range(0, len(lines)):
+		numOfExceutedTransaction += 1
 		line = lines[i]
 		str = line.split(',')
 
 		if str[0] == newOrderXact:
-			w_id = int(str[1]);
-			d_id = int(str[2]);
-			c_id = int(str[3]);
+			c_id = int(str[1]);
+			w_id = int(str[2]);
+			d_id = int(str[3]);
 			needToRead = int(str[4]) #Num of lines needed to read
 
 			newOrderList = []
 			for j in range(0, needToRead):
 				newOrderList.append(lines[i+j+1]);
 
-            #newOrder(w_id, d_id, c_id, newOrderList);
+			newOrder(w_id, d_id, c_id, newOrderList);
 		
 		elif str[0] == paymentXact:
 			c_w_id = str[1];
 			c_d_id = str[2];
 			c_id = str[3];
-			amount = str[4];
+			paymentAmt = Decimal(str[4]);
 
-			payment(c_w_id, c_d_id, c_id, amount);
+			payment(c_w_id, c_d_id, c_id, paymentAmt);
 
 		elif str[0] == deliveryXact:
 			w_id = str[1];
 			carrier_id = str[2];
+
 			delivery(w_id, carrier_id);
 
 		elif str[0] == orderStatusXact:
@@ -145,3 +140,11 @@ with open(filePath, 'r+') as myFile:
 
 		elif str[0] == topBalanceXact:
 			topBalance()
+
+finalExecutionTime = (time.time() - start_time)
+# Each client
+print "--- %s seconds ---" % (finalExecutionTime)
+print "--- Number of executed transactions: %d" % (numOfExceutedTransaction)
+print "--- Transaction Throughput: %d" % (finalExecutionTime / numOfExceutedTransaction)
+
+# NC clients report minimum, average and maximum transaction throughputs

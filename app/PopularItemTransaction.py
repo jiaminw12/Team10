@@ -17,8 +17,8 @@ class PopularItemTransaction(object):
 		
 		popular_item = dict()
 		
-		print "w_id: %s, d_id: %s"%(self.w_id, self.d_id)
-		print "L: %s"%(self.numOfLastOrder)
+		print "District identifier: w_id -  %s, d_id - %s"%(self.w_id, self.d_id)
+		print "Number of last orders to be examined, L: %s"%(self.numOfLastOrder)
 
 		# 1. Find N - the next available order number
 		select_d_next_o_id = self.session.prepare("SELECT d_next_o_id FROM district WHERE d_w_id = ? AND d_id = ?");
@@ -50,7 +50,7 @@ class PopularItemTransaction(object):
 			o_c_id = int(result_last_order[0].o_c_id)
 			o_entry_d = result_last_order[0].o_entry_d
 
-			print "o_id: %d, o_entry_d: %s"%(o_id, o_entry_d)
+			print "O_ID: %d, O_ENTRY_D: %s "%(o_id, o_entry_d)
 			
 			select_customer_name = self.session.prepare("SELECT c_first, c_middle, c_last FROM payment_by_customer WHERE c_w_id = ? AND c_d_id = ? AND c_id = ?")
 			
@@ -75,7 +75,7 @@ class PopularItemTransaction(object):
 				
 				#print "I_ID: %d"%(rowPopular.ol_i_id)
 				print "I_NAME: %s"%(result_item_name[0].i_name)
-				print "OL_QUANTITY: %f"%(rowPopular.ol_quantity)
+				print "OL_QUANTITY: %0.2f"%(rowPopular.ol_quantity)
 				print "\n"
 	
 				if result_item_name[0].i_name in popular_item:
@@ -89,7 +89,7 @@ class PopularItemTransaction(object):
 
 		for key, value in popular_item.iteritems():
 			print "I_NAME: %s"%(key)
-			print "Percentage of orders in S: %f"%(Decimal(int(value)/int(self.numOfLastOrder)*100))
+			print "Percentage of orders in S: %0.2f"%(Decimal(int(value)/int(self.numOfLastOrder)*100))
 			print "\n"
 
 
