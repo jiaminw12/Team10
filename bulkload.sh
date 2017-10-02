@@ -2,39 +2,11 @@
 
 # The following script allows user to retrieve data and transactions
 # and load the data into the database by running the following:
-# bash bulkload.sh arg0
-
-# The arguments can have the following values:
-#		arg0: Number of clients - 10, 20, 40
+# bash bulkload.sh
 
 # Conditions:
 #       Project (Team10-Cassandra) is in home directory
 #		cqlsh is within /temp/Cassandra/bin directory
-
-
-declare -r DATA_FOLDER="data-files"
-declare -r XACT_FOLDER="xact-files"
-
-cd ~/Team10
-
-echo -ne "Checking whether data and xact folder exist...\n"
-if [ -d $DATA_FOLDER ];
-then
-    echo -ne "yes"
-else
-    echo -ne "Downloading 4224-project-files...\n"
-    wget http://www.comp.nus.edu.sg/~cs4224/4224-project-files.zip
-    unzip 4224-project-files.zip
-
-    cd 4224-project-files
-    mv data-files ~/Team10/
-    mv xact-files ~/Team10/
-    cd ..
-    rm -Rf 4224-project-files
-    rm -Rf 4224-project-files.zip
-    echo -ne "Done...\n"
-fi
-
 
 # Bulk load data
 cd /temp/apache-cassandra-3.11.0/bin

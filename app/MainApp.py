@@ -145,6 +145,8 @@ finalExecutionTime = (time.time() - start_time)
 # Each client
 print "--- %s seconds ---" % (finalExecutionTime)
 print "--- Number of executed transactions: %d" % (numOfExceutedTransaction)
-print "--- Transaction Throughput: %d" % (finalExecutionTime / numOfExceutedTransaction)
+throughput = finalExecutionTime / numOfExceutedTransaction
+print "--- Transaction Throughput: %f" % (throughput)
 
-# NC clients report minimum, average and maximum transaction throughputs
+with open("throughput.txt", "a") as myfile:
+	myfile.write(throughput + "\n")
