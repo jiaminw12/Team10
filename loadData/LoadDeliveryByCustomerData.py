@@ -13,7 +13,7 @@ def getdata(filename):
 
 #  Start of program
 cluster = Cluster();
-session = cluster.connect('team02')
+session = cluster.connect('team10')
 
 update_date_time_statement = session.prepare("UPDATE delivery_by_customer SET OL_DELIVERY_D = ? WHERE o_w_id = ? AND o_d_id = ? AND o_id = ? AND ol_number = ? ");
 

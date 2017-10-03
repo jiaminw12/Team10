@@ -1,19 +1,18 @@
-DROP MATERIALIZED VIEW IF EXISTS team02.Top_Balance;
-DROP TABLE IF EXISTS team02.Warehouse;
-DROP TABLE IF EXISTS team02.District;
-DROP TABLE IF EXISTS team02.OrderLine;
-DROP TABLE IF EXISTS team02.Delivery_by_Customer;
-DROP TABLE IF EXISTS team02.StockItem;
-DROP TABLE IF EXISTS team02.Payment_by_Customer;
-DROP TABLE IF EXISTS team02.Item_by_Warehouse_District;
+DROP MATERIALIZED VIEW IF EXISTS team10.Top_Balance;
+DROP TABLE IF EXISTS team10.Warehouse;
+DROP TABLE IF EXISTS team10.District;
+DROP TABLE IF EXISTS team10.OrderLine;
+DROP TABLE IF EXISTS team10.Delivery_by_Customer;
+DROP TABLE IF EXISTS team10.StockItem;
+DROP TABLE IF EXISTS team10.Payment_by_Customer;
+DROP TABLE IF EXISTS team10.Item_by_Warehouse_District;
 
-DROP KEYSPACE IF EXISTS team02;
-USE team02;
+DROP KEYSPACE IF EXISTS team10;
 
-CREATE KEYSPACE team02 WITH replication =
+CREATE KEYSPACE team10 WITH replication =
 {'class':'SimpleStrategy','replication_factor':3};
 
-CREATE TYPE team02.address (
+CREATE TYPE team10.address (
     STREET_1 text,
     STREET_2 text,
     CITY text,
@@ -21,7 +20,7 @@ CREATE TYPE team02.address (
     ZIP text
 );
 
-CREATE TABLE team02.Warehouse (
+CREATE TABLE team10.Warehouse (
     W_ID int,
     W_NAME text,
     W_ADDRESS frozen<address>,
@@ -30,7 +29,7 @@ CREATE TABLE team02.Warehouse (
     PRIMARY KEY (W_ID)
 );
 
-CREATE TABLE team02.District (
+CREATE TABLE team10.District (
     D_W_ID int,
     D_ID int,
     D_NAME text,
@@ -41,7 +40,7 @@ CREATE TABLE team02.District (
     PRIMARY KEY (D_W_ID, D_ID)
 );
 
-CREATE TABLE team02.OrderLine (
+CREATE TABLE team10.OrderLine (
     O_W_ID int,
     O_D_ID int,
     O_ID int,
@@ -59,7 +58,7 @@ CREATE TABLE team02.OrderLine (
     PRIMARY KEY ((O_W_ID, O_D_ID), O_ID, OL_NUMBER)
 ) WITH CLUSTERING ORDER BY (O_ID ASC);
 
-CREATE TABLE team02.Delivery_by_Customer (
+CREATE TABLE team10.Delivery_by_Customer (
     O_W_ID int,
     O_D_ID int,
     O_ID int,
@@ -75,7 +74,7 @@ CREATE TABLE team02.Delivery_by_Customer (
 PRIMARY KEY ((O_W_ID, O_D_ID), O_ID, OL_NUMBER)
 ) WITH CLUSTERING ORDER BY (O_ID DESC);
 
-CREATE TABLE team02.StockItem (
+CREATE TABLE team10.StockItem (
     S_W_ID int,
     S_I_ID int,
     S_YTD decimal,
@@ -98,7 +97,7 @@ CREATE TABLE team02.StockItem (
     PRIMARY KEY ((S_W_ID), S_I_ID)
 );
 
-CREATE TABLE team02.Payment_by_Customer (
+CREATE TABLE team10.Payment_by_Customer (
     C_W_ID int,
     C_D_ID int,
     C_ID int,
@@ -121,7 +120,7 @@ CREATE TABLE team02.Payment_by_Customer (
     PRIMARY KEY((C_W_ID, C_D_ID), C_ID)
 );
 
-CREATE MATERIALIZED VIEW IF NOT EXISTS team02.Top_Balance AS
+CREATE MATERIALIZED VIEW IF NOT EXISTS team10.Top_Balance AS
     SELECT C_ID, C_W_ID, C_D_ID, C_BALANCE, C_FIRST, C_MIDDLE, C_LAST, W_ADDRESS, D_ADDRESS
     FROM team10.Payment_by_Customer
     WHERE C_ID IS NOT NULL
@@ -131,7 +130,7 @@ CREATE MATERIALIZED VIEW IF NOT EXISTS team02.Top_Balance AS
     PRIMARY KEY (C_ID, C_W_ID, C_D_ID, C_BALANCE)
 WITH CLUSTERING ORDER BY (C_BALANCE DESC);
 
-CREATE TABLE team02.Item_by_Warehouse_District (
+CREATE TABLE team10.Item_by_Warehouse_District (
     W_ID int,
     I_ID int,
     D_ID int,

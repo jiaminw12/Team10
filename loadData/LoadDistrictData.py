@@ -21,9 +21,9 @@ def getdata(filename):
 #  Start of program
 #cluster = Cluster(['192.168.0.1', '192.168.0.2'])
 cluster = Cluster();
-session = cluster.connect('team02')
+session = cluster.connect('team10')
 
-cluster.register_user_type('team02', 'address', Address)
+cluster.register_user_type('team10', 'address', Address)
 
 insert_statement = session.prepare("INSERT INTO district (d_w_id, d_id, d_name, d_address, d_tax, d_ytd, d_next_o_id) VALUES (?, ?, ?, ?, ?, ?, ?)")
 

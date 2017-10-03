@@ -10,7 +10,7 @@
 declare -r DATA_FOLDER="data-files"
 declare -r XACT_FOLDER="xact-files"
 
-cd ~/Team02
+cd ~/Team10
 
 echo -ne "Checking whether data and xact folder exist...\n"
 if [ -d $DATA_FOLDER ];
