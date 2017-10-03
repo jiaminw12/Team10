@@ -12,7 +12,7 @@ def getdata(filename):
 #  Start of program
 #cluster = Cluster(['192.168.0.1', '192.168.0.2'])
 cluster = Cluster();
-session = cluster.connect('team10')
+session = cluster.connect('team02')
 
 str_list = []
 for i in range (1, 100001):

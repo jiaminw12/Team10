@@ -1,0 +1,6 @@
+data-files
+xact-files
+*.pyc
+*.csv
+app/logs
+log
