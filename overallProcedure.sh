@@ -36,9 +36,9 @@ cqlsh -e "CONSISTENCY ONE"
 
 bash bulkload.sh
 
-bash benchmark.sh 10
-bash benchmark.sh 20
-bash benchmark.sh 40
+bash benchmark.sh 10 > benchmark1001.txt
+bash benchmark.sh 20 > benchmark2001.txt
+bash benchmark.sh 40 > benchmark4001.txt
 
 
 # QUORUM
@@ -47,7 +47,7 @@ cqlsh -e "CONSISTENCY QUORUM"
 
 bash bulkload.sh
 
-bash benchmark.sh 10
-bash benchmark.sh 20
-bash benchmark.sh 40
+bash benchmark.sh 10 > benchmark1002.txt
+bash benchmark.sh 20 > benchmark2002.txt
+bash benchmark.sh 40 > benchmark4002.txt
 

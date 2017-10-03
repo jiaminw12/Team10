@@ -141,6 +141,7 @@ with open(filePath, 'r+') as myFile:
 		elif str[0] == topBalanceXact:
 			topBalance()
 
+connect.close()
 finalExecutionTime = (time.time() - start_time)
 # Each client
 print "--- %s seconds ---" % (finalExecutionTime)
@@ -149,4 +150,5 @@ throughput = finalExecutionTime / numOfExceutedTransaction
 print "--- Transaction Throughput: %f" % (throughput)
 
 with open("throughput.txt", "a") as myfile:
-	myfile.write(throughput + "\n")
+	myfile.write("%f" % throughput)
+	myfile.write('\n')

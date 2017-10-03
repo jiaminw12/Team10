@@ -1,17 +1,14 @@
 #!/usr/bin/env python
 
+from __future__ import division
 import sys
 import time
 from decimal import *
-from __future__ import division
 
 throughputNum = []
-filePath = 'throughput.txt';
+filePath = '../app/throughput.txt';
 with open(filePath, 'r+') as myFile:
-	lines = myFile.readlines()
-
-	for i in range(0, len(lines)):
-		throughputNum = lines[i]
+	throughputNum = [Decimal(line.rstrip()) for line in myFile]
 
 max_value = max(throughputNum)
 min_value = min(throughputNum)

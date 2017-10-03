@@ -30,7 +30,7 @@ class Connect(object):
 
     def close(self):
         self.session.shutdown();
-        self.cluster.shutdown();
+        cluster.shutdown();
 
 
 
