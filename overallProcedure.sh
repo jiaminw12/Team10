@@ -15,7 +15,7 @@ cd ~/Team10
 echo -ne "Checking whether data and xact folder exist...\n"
 if [ -d $DATA_FOLDER ];
 then
-	echo -ne "yes"
+	echo -ne "yes \n"
 else
 	echo -ne "Downloading 4224-project-files...\n"
 	wget http://www.comp.nus.edu.sg/~cs4224/4224-project-files.zip
@@ -37,8 +37,13 @@ cqlsh -e "CONSISTENCY ONE"
 bash bulkload.sh
 
 bash benchmark.sh 10 > benchmark1001.txt
+cp -a ~/Team10/log ~/Team10/log1001
+
 bash benchmark.sh 20 > benchmark2001.txt
+cp -a ~/Team10/log ~/Team10/log2001
+
 bash benchmark.sh 40 > benchmark4001.txt
+cp -a ~/Team10/log ~/Team10/log4001
 
 
 # QUORUM
@@ -48,6 +53,13 @@ cqlsh -e "CONSISTENCY QUORUM"
 bash bulkload.sh
 
 bash benchmark.sh 10 > benchmark1002.txt
+cp -a ~/Team10/log ~/Team10/log1002
+
 bash benchmark.sh 20 > benchmark2002.txt
+cp -a ~/Team10/log ~/Team10/log2002
+
 bash benchmark.sh 40 > benchmark4002.txt
+cp -a ~/Team10/log ~/Team10/log4002
+
+rm -rf log
 
