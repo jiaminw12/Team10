@@ -58,6 +58,8 @@ CREATE TABLE team10.OrderLine (
     PRIMARY KEY ((O_W_ID, O_D_ID), O_ID, OL_NUMBER)
 ) WITH CLUSTERING ORDER BY (O_ID ASC);
 
+ALTER TABLE team10.OrderLine WITH GC_GRACE_SECONDS = 0;
+
 CREATE TABLE team10.Delivery_by_Customer (
     O_W_ID int,
     O_D_ID int,
@@ -73,6 +75,8 @@ CREATE TABLE team10.Delivery_by_Customer (
     OL_QUANTITY decimal,
 PRIMARY KEY ((O_W_ID, O_D_ID), O_ID, OL_NUMBER)
 ) WITH CLUSTERING ORDER BY (O_ID DESC);
+
+ALTER TABLE team10.Delivery_by_Customer WITH GC_GRACE_SECONDS = 0;
 
 CREATE TABLE team10.StockItem (
     S_W_ID int,
@@ -97,6 +101,8 @@ CREATE TABLE team10.StockItem (
     PRIMARY KEY ((S_W_ID), S_I_ID)
 );
 
+ALTER TABLE team10.StockItem WITH GC_GRACE_SECONDS = 0;
+
 CREATE TABLE team10.Payment_by_Customer (
     C_W_ID int,
     C_D_ID int,
@@ -120,6 +126,8 @@ CREATE TABLE team10.Payment_by_Customer (
     PRIMARY KEY((C_W_ID, C_D_ID), C_ID)
 );
 
+ALTER TABLE team10.Payment_by_Customer WITH GC_GRACE_SECONDS = 0;
+
 CREATE MATERIALIZED VIEW IF NOT EXISTS team10.Top_Balance AS
     SELECT C_ID, C_W_ID, C_D_ID, C_BALANCE, C_FIRST, C_MIDDLE, C_LAST, W_ADDRESS, D_ADDRESS
     FROM team10.Payment_by_Customer
@@ -138,8 +146,9 @@ CREATE TABLE team10.Item_by_Warehouse_District (
     I_NAME text,
     W_TAX decimal,
     D_TAX decimal,
-    D_NEXT_O_ID int,
     S_QUANTITY decimal,
     PRIMARY KEY (W_ID, I_ID, D_ID)
 ) WITH CLUSTERING ORDER BY (I_ID ASC, D_ID ASC);
+
+ALTER TABLE team10.Item_by_Warehouse_District WITH GC_GRACE_SECONDS = 0;
 

@@ -29,7 +29,7 @@ echo "completed"
 rm ~/Team10/app/throughput.txt
 
 # Part 4
-echo -ne "1. SELECT sum(W_YTD) FROM team10.Warehouse ... \n"
+echo -ne "\n1. SELECT sum(W_YTD) FROM team10.Warehouse ... \n"
 cqlsh -e "SELECT sum(W_YTD) FROM team10.Warehouse;"
 
 echo -ne "2. SELECT sum(D_YTD), sum(D_NEXT_O_ID) FROM team10.District ... \n"

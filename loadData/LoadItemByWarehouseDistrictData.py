@@ -62,7 +62,7 @@ print("Inserting Done ... ")
 
 
 # district
-update_district_statement = session.prepare("UPDATE item_by_warehouse_district SET d_next_o_id = ?, d_tax = ? WHERE w_id = ? AND d_id = ? AND i_id IN (" + str + ")");
+update_district_statement = session.prepare("UPDATE item_by_warehouse_district SET d_tax = ? WHERE w_id = ? AND d_id = ? AND i_id IN (" + str + ")");
 
 print("Updating District data ... ")
 for row in getdata('../data-files/district.csv'):
@@ -70,9 +70,8 @@ for row in getdata('../data-files/district.csv'):
     d_w_id = int(row[0])
     d_id = int(row[1])
     d_tax = Decimal(row[8])
-    d_next_o_id = int(row[10])
     
-    session.execute(update_district_statement, [d_next_o_id, d_tax, d_w_id, d_id])
+    session.execute(update_district_statement, [d_tax, d_w_id, d_id])
 print("Updating Done ... ")
 
 cluster.shutdown();
