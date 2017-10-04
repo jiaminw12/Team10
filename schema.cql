@@ -126,8 +126,6 @@ CREATE TABLE team10.Payment_by_Customer (
     PRIMARY KEY((C_W_ID, C_D_ID), C_ID)
 );
 
-ALTER TABLE team10.Payment_by_Customer WITH GC_GRACE_SECONDS = 0;
-
 CREATE MATERIALIZED VIEW IF NOT EXISTS team10.Top_Balance AS
     SELECT C_ID, C_W_ID, C_D_ID, C_BALANCE, C_FIRST, C_MIDDLE, C_LAST, W_ADDRESS, D_ADDRESS
     FROM team10.Payment_by_Customer
