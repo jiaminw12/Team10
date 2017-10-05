@@ -32,6 +32,7 @@ class OrderStatusTransaction(object):
 		orderdetails = self.session.execute(select_order,(int(self.c_w_id), int(self.c_d_id), int(self.c_id), int(lastorder.o_id)))
 		temp = orderdetails[0];
 		print "order ID: %d\t Entry Date: %s\t Carrier ID: %d\t\n" % (temp.o_id, temp.o_entry_d,temp.o_carrier_id)
+		#print temp.o.entry_d
 		
 		for row in orderdetails:
 			print "Item ID: %d\t Supply Warehouse ID: %d\t Quantity: %d\t Amount: %f\t Delivery Date: %s\n" % (row.ol_i_id, row.ol_supply_w_id, row.ol_quantity, row.ol_amount,row.ol_delivery_d)

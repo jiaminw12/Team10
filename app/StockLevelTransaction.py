@@ -27,8 +27,10 @@ class StockLevelTransaction(object):
 		next_o_id = next_oid[0].d_next_o_id
 		
 		last_l_orders = self.session.execute(select_last_l_order,(int(self.w_id), int(self.d_id), (int(next_o_id) - int(self.numOfLastOrder)), int(next_o_id)))
+		print "Items below threshold\n"
 		for row in last_l_orders:
 			execute_count = self.session.execute(select_quantity, (int(self.w_id), int(row.ol_i_id), int(self.stockThreshold)))
+			#print "Order item ID: %d\n"%(row.ol_i_id)
 			if execute_count[0].countno > 0:
 				print "Item ID: %d \nNumber: %d\n"%(row.ol_i_id, execute_count[0].countno)
 
