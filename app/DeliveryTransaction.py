@@ -4,7 +4,6 @@ from datetime import datetime
 import decimal
 
 class DeliveryTransaction(object):
-	# TODO(CF) There is no proper value to select for null o_carrier_id
 	def __init__(self, session, w_id, carrier_id):
 		self.session = session
 		self.w_id = int(w_id)
@@ -13,23 +12,23 @@ class DeliveryTransaction(object):
 
 	def initPreparedStmts(self):
 		self.min_order_number_query = self.session.prepare(
-				"SELECT o_id, o_c_id FROM team10.orderline "
+				"SELECT o_id, o_c_id FROM orderline "
 				"WHERE o_w_id = ? AND o_d_id = ? AND o_carrier_id = 0 "
 				"LIMIT 1 ALLOW FILTERING")
 		self.select_all_ols_by_order = self.session.prepare(
-				"SELECT ol_number, ol_amount FROM team10.orderline "
+				"SELECT ol_number, ol_amount FROM orderline "
 				"WHERE o_w_id = ? AND o_d_id = ? AND o_id = ?")
 		self.update_delivery_by_customer_query = self.session.prepare(
-				"UPDATE team10.delivery_by_customer SET o_carrier_id = ?, ol_delivery_d = ?"
+				"UPDATE delivery_by_customer SET o_carrier_id = ?, ol_delivery_d = ?"
 				"WHERE o_w_id = ? AND o_d_id = ? AND o_id = ? AND ol_number = ?")
 		self.update_order_line_query = self.session.prepare(
-				"UPDATE team10.orderline SET o_carrier_id = ?"
+				"UPDATE orderline SET o_carrier_id = ?"
 				"WHERE o_w_id = ? AND o_d_id = ? AND o_id = ? AND ol_number = ?")
 		self.select_payment_by_customer_query = self.session.prepare(
-				"SELECT c_balance, c_delivery_cnt FROM team10.payment_by_customer "
+				"SELECT c_balance, c_delivery_cnt FROM payment_by_customer "
 				"WHERE c_w_id = ? AND c_d_id = ? AND c_id = ?")
 		self.update_payment_by_customer_query = self.session.prepare(
-				"UPDATE team10.payment_by_customer SET c_balance = ?, c_delivery_cnt= ? "
+				"UPDATE payment_by_customer SET c_balance = ?, c_delivery_cnt= ? "
 				"WHERE c_w_id = ? AND c_d_id = ? AND c_id = ?")
 
 	def process(self):
