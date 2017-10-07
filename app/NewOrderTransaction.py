@@ -134,8 +134,8 @@ class NewOrderTransaction():
 		L.info("Updating stockitem wid:%d, iid:%d with ytd:%d, remotecnt:%d" %(wid, iid, ytd, remotecnt))
 		self.session.execute(self.update_stockitem,(ytd, ordercnt, remotecnt+_remotecnt, wid, iid));
 
-	def insertCustomerByDelivery(self, ol_number, ol_amount,ol_i_id, ol_quantity, ol_supply_w_id):
-		self.session.execute(self.insert_delivery_by_customer, (self.w_id, self.d_id, self.o_id, ol_number, self.c_id, self.o_carrier_id, None, ol_amount, None, ol_i_id, ol_quantity, ol_supply_w_id));
+	def insertCustomerByDelivery(self, ol_number, ol_amount, ol_i_id, ol_quantity, ol_supply_w_id):
+		self.session.execute(self.insert_delivery_by_customer, (self.w_id, self.d_id, self.o_id, ol_number, self.c_id, self.o_carrier_id, self.o_entry_d, ol_amount, None, ol_i_id, ol_quantity, ol_supply_w_id));
 		
 	def insertNewOrderLine(self):
 		#Fill in Order data
@@ -149,8 +149,6 @@ class NewOrderTransaction():
 		self.o_all_local = int(all(x == self.o_w_id for x in self.supplier_w_id_list));
 
 		self.total_amt = 0;
-
-
 
 		for i in range(0, self.num_items):
 			adjusted_qty = self.s_quantity_list[i] - self.quantity_list[i];
