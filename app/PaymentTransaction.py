@@ -42,10 +42,11 @@ class PaymentTransaction(object):
 
 	def update_customer(self):
 		customer_attr = self.session.execute(self.select_payment_by_customer_query, (self.c_w_id, self.c_d_id, self.c_id))
-		self.c_balance_to_update = customer_attr[0][0] - self.payment
-	   	self.c_ytd_payment_to_update = customer_attr[0][1] + float(self.payment)
-		self.c_payment_cnt_to_update = customer_attr[0][2] + 1
-	   	self.session.execute(self.update_payment_by_customer_query,(self.c_balance_to_update, self.c_ytd_payment_to_update, self.c_payment_cnt_to_update, self.c_w_id, self.c_d_id, self.c_id))
+		if customer_attr:
+			self.c_balance_to_update = customer_attr[0][0] - self.payment
+	   		self.c_ytd_payment_to_update = customer_attr[0][1] + float(self.payment)
+			self.c_payment_cnt_to_update = customer_attr[0][2] + 1
+	   		self.session.execute(self.update_payment_by_customer_query,(self.c_balance_to_update, self.c_ytd_payment_to_update, self.c_payment_cnt_to_update, self.c_w_id, self.c_d_id, self.c_id))
 
 	def retrieve_output(self):
 		output_attr = self.session.execute(self.output_query, (self.c_w_id, self.c_d_id, self.c_id))
