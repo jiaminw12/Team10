@@ -22,6 +22,8 @@ def getdata(filename):
 
 # New Order Transaction
 def newOrder(w_id, d_id, c_id, newOrderList):
+	
+	print("\n-------- New Order Transaction --------")	
 	num_items = len(newOrderList);
 	i_id_list = [];
 	supplier_w_id_list = [];
@@ -38,22 +40,26 @@ def newOrder(w_id, d_id, c_id, newOrderList):
 
 # Payment Transaction
 def payment(c_w_id, c_d_id, c_id, paymentAmt):
+	print("\n-------- Payment Transaction --------")
 	paymentTransaction = PaymentTransaction(session, c_w_id, c_d_id, c_id, paymentAmt)
 	paymentTransaction.process()
 
 # Delivery Transaction
 def delivery(w_id, carrier_id):
+	print("\n-------- Delivery Transaction --------")
 	deliveryTransaction = DeliveryTransaction(session,w_id, carrier_id)
 	deliveryTransaction.process()
 
 # Order-Status Transaction
 def orderStatus(c_w_id, c_d_id, c_id):
+	print("\n-------- Order-Status Transaction --------")
 	orderStatusTransaction = OrderStatusTransaction(session, c_w_id, c_d_id, c_id)
 	orderStatusTransaction.process()
 
 # Stock-Level Transaction
 def stockLevel( w_id, d_id, stockThreshold, numLastOrder):
-	stockLevelTransaction =StockLevelTransaction(session, w_id, d_id, stockThreshold, numLastOrder)
+	print("\n-------- Stock-Level Transaction --------")
+	stockLevelTransaction = StockLevelTransaction(session, w_id, d_id, stockThreshold, numLastOrder)
 	stockLevelTransaction.process()
 
 # Popular-Item
