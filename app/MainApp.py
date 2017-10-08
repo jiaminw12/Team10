@@ -4,6 +4,7 @@ import sys
 import time
 from decimal import *
 from cassandra.cluster import Cluster
+from cassandra import ConsistencyLevel
 from ConnectCassandra import Connect
 from NewOrderTransaction import NewOrderTransaction
 from PaymentTransaction import PaymentTransaction
@@ -35,41 +36,43 @@ def newOrder(w_id, d_id, c_id, newOrderList):
 		supplier_w_id_list.append(int(orderArray[1]));
 		quantity_list.append(int(orderArray[2]));
 
-	newOrderTransaction = NewOrderTransaction(session, w_id, d_id, c_id, num_items, i_id_list, supplier_w_id_list, quantity_list);
+	newOrderTransaction = NewOrderTransaction(session, consistencyLevel, w_id, d_id, c_id, num_items, i_id_list, supplier_w_id_list, quantity_list);
 	newOrderTransaction.process();
 
 # Payment Transaction
 def payment(c_w_id, c_d_id, c_id, paymentAmt):
 	print("\n-------- Payment Transaction --------")
-	paymentTransaction = PaymentTransaction(session, c_w_id, c_d_id, c_id, paymentAmt)
+	paymentTransaction = PaymentTransaction(session, consistencyLevel, c_w_id, c_d_id, c_id, paymentAmt)
 	paymentTransaction.process()
 
 # Delivery Transaction
 def delivery(w_id, carrier_id):
 	print("\n-------- Delivery Transaction --------")
-	deliveryTransaction = DeliveryTransaction(session,w_id, carrier_id)
+	deliveryTransaction = DeliveryTransaction(session, consistencyLevel, w_id, carrier_id)
 	deliveryTransaction.process()
 
 # Order-Status Transaction
 def orderStatus(c_w_id, c_d_id, c_id):
 	print("\n-------- Order-Status Transaction --------")
-	orderStatusTransaction = OrderStatusTransaction(session, c_w_id, c_d_id, c_id)
+	orderStatusTransaction = OrderStatusTransaction(session, consistencyLevel, c_w_id, c_d_id, c_id)
 	orderStatusTransaction.process()
 
 # Stock-Level Transaction
 def stockLevel( w_id, d_id, stockThreshold, numLastOrder):
 	print("\n-------- Stock-Level Transaction --------")
-	stockLevelTransaction = StockLevelTransaction(session, w_id, d_id, stockThreshold, numLastOrder)
+	stockLevelTransaction = StockLevelTransaction(session, consistencyLevel, w_id, d_id, stockThreshold, numLastOrder)
 	stockLevelTransaction.process()
 
 # Popular-Item
 def popularItem(w_id, d_id, numLastOrder):
-	popularItemTransaction = PopularItemTransaction(session, w_id, d_id, numLastOrder)
+	print("\n-------- Popular Item Transaction --------")
+	popularItemTransaction = PopularItemTransaction(session, consistencyLevel, w_id, d_id, numLastOrder)
 	popularItemTransaction.process()
 
 # Top-Balance
 def topBalance():
-	topBalanceTransaction = TopBalanceTransaction(session)
+	print("\n-------- Top Balance Transaction --------")
+	topBalanceTransaction = TopBalanceTransaction(session, consistencyLevel)
 	topBalanceTransaction.process()
 
 
@@ -88,6 +91,7 @@ connect = Connect('team10')
 session = connect.getSession()
 
 filePath = '../xact-files/%s' % sys.argv[1];
+consistencyLevel = sys.argv[2] # 1 - one, 2 - QUORUM
 start_time = time.time()
 with open(filePath, 'r+') as myFile:
 	lines = myFile.readlines()

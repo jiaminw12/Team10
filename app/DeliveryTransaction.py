@@ -1,11 +1,13 @@
 #!/usr/bin/env python
 from cassandra.cluster import Cluster
+from cassandra import ConsistencyLevel
 from datetime import datetime
 import decimal
 
 class DeliveryTransaction(object):
-	def __init__(self, session, w_id, carrier_id):
+	def __init__(self, session, consistencyLevel, w_id, carrier_id):
 		self.session = session
+		self.consistencyLevel = consistencyLevel
 		self.w_id = int(w_id)
 		self.carrier_id = int(carrier_id)
 		self.initPreparedStmts()
@@ -30,6 +32,21 @@ class DeliveryTransaction(object):
 		self.update_payment_by_customer_query = self.session.prepare(
 				"UPDATE payment_by_customer SET c_balance = ?, c_delivery_cnt= ? "
 				"WHERE c_w_id = ? AND c_d_id = ? AND c_id = ?")
+	
+		if self.consistencyLevel == '1' :
+			self.min_order_number_query.consistency_level = ConsistencyLevel.ONE
+			self.select_all_ols_by_order.consistency_level = ConsistencyLevel.ONE
+			self.update_delivery_by_customer_query.consistency_level = ConsistencyLevel.ONE
+			self.update_order_line_query.consistency_level = ConsistencyLevel.ONE
+			self.select_payment_by_customer_query.consistency_level = ConsistencyLevel.ONE
+			self.update_payment_by_customer_query.consistency_level = ConsistencyLevel.ONE
+		else:
+			self.min_order_number_query.consistency_level = ConsistencyLevel.QUORUM
+			self.select_all_ols_by_order.consistency_level = ConsistencyLevel.QUORUM
+			self.update_delivery_by_customer_query.consistency_level = ConsistencyLevel.QUORUM
+			self.update_order_line_query.consistency_level = ConsistencyLevel.QUORUM
+			self.select_payment_by_customer_query.consistency_level = ConsistencyLevel.QUORUM
+			self.update_payment_by_customer_query.consistency_level = ConsistencyLevel.QUORUM
 
 	def process(self):
 		for district_no in range(1, 11):

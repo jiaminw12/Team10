@@ -1,17 +1,52 @@
 #!/usr/bin/env python
 
 from cassandra.cluster import Cluster
+from cassandra import ConsistencyLevel
 from decimal import *
 
 class PopularItemTransaction(object):
 	
 	global popular_item
 
-	def __init__(self, session, w_id, d_id, numOfLastOrder):
+	def __init__(self, session, consistencyLevel, w_id, d_id, numOfLastOrder):
 		self.session = session
+		self.consistencyLevel = consistencyLevel
 		self.w_id = w_id
 		self.d_id = d_id
 		self.numOfLastOrder = numOfLastOrder
+		self.initPreparedStmts()
+	
+	def initPreparedStmts(self):
+		self.select_d_next_o_id = self.session.prepare("SELECT d_next_o_id FROM district WHERE d_w_id = ? AND d_id = ?");
+
+		self.select_last_order_id = self.session.prepare("SELECT o_id FROM delivery_by_customer WHERE o_w_id = ? AND o_d_id = ? AND o_id >= ? AND o_id < ?")
+
+		self.select_last_order = self.session.prepare("SELECT o_c_id, o_entry_d FROM delivery_by_customer WHERE o_w_id = ? AND o_d_id = ? AND o_id = ?")
+
+		self.select_customer_name = self.session.prepare("SELECT c_first, c_middle, c_last FROM payment_by_customer WHERE c_w_id = ? AND c_d_id = ? AND c_id = ?")
+
+		self.select_max_quantity = self.session.prepare("SELECT max(ol_quantity) as max_quantity FROM orderline WHERE o_w_id = ? AND o_d_id = ? AND o_id = ?");
+
+		self.select_max_quantity_item  = self.session.prepare("SELECT ol_i_id, ol_quantity FROM orderline WHERE o_w_id = ? AND o_d_id = ? AND o_id = ? AND ol_quantity = ? ALLOW FILTERING");
+
+		self.select_item_name = self.session.prepare("SELECT i_name FROM item_by_warehouse_district WHERE w_id = ? AND d_id = ? AND i_id = ?");
+	
+		if self.consistencyLevel == '1' :
+			self.select_d_next_o_id.consistency_level = ConsistencyLevel.ONE
+			self.select_last_order_id.consistency_level = ConsistencyLevel.ONE
+			self.select_last_order.consistency_level = ConsistencyLevel.ONE
+			self.select_customer_name.consistency_level = ConsistencyLevel.ONE
+			self.select_max_quantity.consistency_level = ConsistencyLevel.ONE
+			self.select_max_quantity_item.consistency_level = ConsistencyLevel.ONE
+			self.select_item_name.consistency_level = ConsistencyLevel.ONE
+		else:
+			self.select_d_next_o_id.consistency_level = ConsistencyLevel.QUORUM
+			self.select_last_order_id.consistency_level = ConsistencyLevel.QUORUM
+			self.select_last_order.consistency_level = ConsistencyLevel.QUORUM
+			self.select_customer_name.consistency_level = ConsistencyLevel.QUORUM
+			self.select_max_quantity.consistency_level = ConsistencyLevel.QUORUM
+			self.select_max_quantity_item.consistency_level = ConsistencyLevel.QUORUM
+			self.select_item_name.consistency_level = ConsistencyLevel.QUORUM
 
 	def process(self):
 		
@@ -21,16 +56,13 @@ class PopularItemTransaction(object):
 		print "Number of last orders to be examined, L: %s"%(self.numOfLastOrder)
 
 		# 1. Find N - the next available order number
-		select_d_next_o_id = self.session.prepare("SELECT d_next_o_id FROM district WHERE d_w_id = ? AND d_id = ?");
-		result_d_next_o_id = self.session.execute(select_d_next_o_id, [int(self.w_id), int(self.d_id)])
+		result_d_next_o_id = self.session.execute(self.select_d_next_o_id, [int(self.w_id), int(self.d_id)])
 		nextAvailableOrderNum = int(result_d_next_o_id[0].d_next_o_id)
 
 		# 2. Find S - the set of last L orders and order lines for district
 		startOrderId = nextAvailableOrderNum - int(self.numOfLastOrder)
 
-		select_last_order_id = self.session.prepare("SELECT o_id FROM delivery_by_customer WHERE o_w_id = ? AND o_d_id = ? AND o_id >= ? AND o_id < ?")
-
-		result_last_order_id = self.session.execute(select_last_order_id, [int(self.w_id), int(self.d_id), startOrderId, nextAvailableOrderNum])
+		result_last_order_id = self.session.execute(self.select_last_order_id, [int(self.w_id), int(self.d_id), startOrderId, nextAvailableOrderNum])
 		
 		# Remove duplicated order number
 		numList = []
@@ -43,45 +75,40 @@ class PopularItemTransaction(object):
 
 			o_id = int(row)
 			
-			select_last_order = self.session.prepare("SELECT o_c_id, o_entry_d FROM delivery_by_customer WHERE o_w_id = ? AND o_d_id = ? AND o_id = ?")
-		
-			result_last_order = self.session.execute(select_last_order, [int(self.w_id), int(self.d_id), o_id])
+			result_last_order = self.session.execute(self.select_last_order, [int(self.w_id), int(self.d_id), o_id])
 			
-			o_c_id = int(result_last_order[0].o_c_id)
-			o_entry_d = result_last_order[0].o_entry_d
+			if result_last_order[0].o_c_id is not None:
+				o_c_id = int(result_last_order[0].o_c_id)
+				o_entry_d = result_last_order[0].o_entry_d
 
-			print "O_ID: %d, O_ENTRY_D: %s "%(o_id, o_entry_d)
+				print "O_ID: %d, O_ENTRY_D: %s "%(o_id, o_entry_d)
 			
-			select_customer_name = self.session.prepare("SELECT c_first, c_middle, c_last FROM payment_by_customer WHERE c_w_id = ? AND c_d_id = ? AND c_id = ?")
+				result_customer_name = self.session.execute(self.select_customer_name, [int(self.w_id), int(self.d_id), o_c_id])
 			
-			result_customer_name = self.session.execute(select_customer_name, [int(self.w_id), int(self.d_id), o_c_id])
+				print "C_FIRST: %s,  C_MIDDLE: %s,  C_LAST: %s"%(result_customer_name[0].c_first, result_customer_name[0].c_middle, result_customer_name[0].c_last)
 			
-			print "C_FIRST: %s,  C_MIDDLE: %s,  C_LAST: %s"%(result_customer_name[0].c_first, result_customer_name[0].c_middle, result_customer_name[0].c_last)
+				# 3. Find max quantity
+				result_max_quantity= self.session.execute(self.select_max_quantity, [int(self.w_id), int(self.d_id), o_id])
+				if result_max_quantity[0].max_quantity is not None:
+					max_num = int(result_max_quantity[0].max_quantity)
 			
-			# 3. Find max quantity
-			select_max_quantity = self.session.prepare("SELECT max(ol_quantity) as max_quantity FROM orderline WHERE o_w_id = ? AND o_d_id = ? AND o_id = ?");
-			result_max_quantity= self.session.execute(select_max_quantity, [int(self.w_id), int(self.d_id), o_id])
-			max_num = int(result_max_quantity[0].max_quantity)
+					# 4. Get the set with max quantity
+					result_max_quantity_item= self.session.execute(self.select_max_quantity_item, [int(self.w_id), int(self.d_id), o_id, max_num])
 			
-			# 4. Get the set with max quantity
-			select_max_quantity_item  = self.session.prepare("SELECT ol_i_id, ol_quantity FROM orderline WHERE o_w_id = ? AND o_d_id = ? AND o_id = ? AND ol_quantity = ? ALLOW FILTERING");
-			result_max_quantity_item= self.session.execute(select_max_quantity_item, [int(self.w_id), int(self.d_id), o_id, max_num])
-			
-			for rowPopular in result_max_quantity_item:
+					for rowPopular in result_max_quantity_item:
 				
-				# 5. Find item name
-				select_item_name = self.session.prepare("SELECT i_name FROM item_by_warehouse_district WHERE w_id = ? AND d_id = ? AND i_id = ?");
-				result_item_name= self.session.execute(select_item_name, [int(self.w_id), int(self.d_id), rowPopular.ol_i_id])
+						# 5. Find item name
+						result_item_name= self.session.execute(self.select_item_name, [int(self.w_id), int(self.d_id), rowPopular.ol_i_id])
 				
-				#print "I_ID: %d"%(rowPopular.ol_i_id)
-				print "I_NAME: %s"%(result_item_name[0].i_name)
-				print "OL_QUANTITY: %0.2f"%(rowPopular.ol_quantity)
-				print "\n"
+						#print "I_ID: %d"%(rowPopular.ol_i_id)
+						print "I_NAME: %s"%(result_item_name[0].i_name)
+						print "OL_QUANTITY: %0.2f"%(rowPopular.ol_quantity)
+						print "\n"
 	
-				if result_item_name[0].i_name in popular_item:
-					popular_item[result_item_name[0].i_name] += 1
-				else:
-					popular_item[result_item_name[0].i_name] = 1
+						if result_item_name[0].i_name in popular_item:
+							popular_item[result_item_name[0].i_name] += 1
+						else:
+							popular_item[result_item_name[0].i_name] = 1
 
 
 		# 6. Find the percentage of examined of orders that contain each popular item

@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 from cassandra.cluster import Cluster
+from cassandra import ConsistencyLevel
 from time import gmtime, strftime
 from datetime import datetime
 import logging, os
@@ -18,8 +19,9 @@ L.basicConfig(filename = 'logs', level = logging.INFO);
 
 class NewOrderTransaction():
 
-	def __init__(self, session, w_id, d_id, c_id, num_items, i_id_list, supplier_w_id_list, quantity_list):
+	def __init__(self, session, consistencyLevel, w_id, d_id, c_id, num_items, i_id_list, supplier_w_id_list, quantity_list):
 		self.session = session
+		self.consistencyLevel = consistencyLevel
 		self.w_id = w_id
 		self.d_id = d_id
 		self.c_id = c_id
@@ -42,11 +44,10 @@ class NewOrderTransaction():
 
 		self.update_next_oid_district = self.session.prepare("UPDATE district SET d_next_o_id = ? where d_w_id = ? AND d_id = ?");
 
-		self.insert_orderline = self.session.prepare("INSERT INTO orderline (O_W_ID, O_D_ID, O_ID, O_C_ID, O_CARRIER_ID, O_OL_CNT, O_ALL_LOCAL, O_ENTRY_D, OL_NUMBER, OL_I_ID, OL_AMOUNT,OL_SUPPLY_W_ID, OL_QUANTITY,OL_DIST_INFO) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+		#self.insert_orderline = self.session.prepare("INSERT INTO orderline (O_W_ID, O_D_ID, O_ID, O_C_ID, O_CARRIER_ID, O_OL_CNT, O_ALL_LOCAL, O_ENTRY_D, OL_NUMBER, OL_I_ID, OL_AMOUNT,OL_SUPPLY_W_ID, OL_QUANTITY,OL_DIST_INFO) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 
 		self.select_item_info = self.session.prepare("SELECT i_price, i_name,  s_quantity FROM item_by_warehouse_district where w_id = ? AND i_id = ?");
 
-		
 		self.select_tax = self.session.prepare("SELECT w_tax,d_tax from item_by_warehouse_district where w_id = ? and i_id = 1 and d_id = ? ");
 		
 		self.select_customer_info = self.session.prepare("SELECT c_last, c_credit, c_discount from payment_by_customer where c_w_id = ? and c_d_id = ? and c_id = ?");
@@ -54,6 +55,29 @@ class NewOrderTransaction():
 		self.insert_orderline = self.session.prepare("INSERT INTO orderline (o_w_id, o_d_id, o_id, o_all_local, o_c_id, o_carrier_id, o_entry_d, o_ol_cnt, ol_number, ol_amount, ol_dist_info, ol_i_id, ol_quantity, ol_supply_w_id) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 
 		self.insert_delivery_by_customer = self.session.prepare("INSERT INTO delivery_by_customer (o_w_id, o_d_id, o_id, ol_number, o_c_id, o_carrier_id, o_entry_d, ol_amount, ol_delivery_d, ol_i_id, ol_quantity, ol_supply_w_id) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)");
+	
+		if self.consistencyLevel == '1' :
+			self.update_stockitem.consistency_level = ConsistencyLevel.ONE
+			self.select_cnt_stockitem.consistency_level = ConsistencyLevel.ONE
+			self.update_sqty.consistency_level = ConsistencyLevel.ONE
+			self.select_next_oid_district.consistency_level = ConsistencyLevel.ONE
+			self.update_next_oid_district.consistency_level = ConsistencyLevel.ONE
+			self.select_item_info.consistency_level = ConsistencyLevel.ONE
+			self.select_tax.consistency_level = ConsistencyLevel.ONE
+			self.select_customer_info.consistency_level = ConsistencyLevel.ONE
+			self.insert_orderline.consistency_level = ConsistencyLevel.ONE
+			self.insert_delivery_by_customer.consistency_level = ConsistencyLevel.ONE
+		else:
+			self.update_stockitem.consistency_level = ConsistencyLevel.QUORUM
+			self.select_cnt_stockitem.consistency_level = ConsistencyLevel.QUORUM
+			self.update_sqty.consistency_level = ConsistencyLevel.QUORUM
+			self.select_next_oid_district.consistency_level = ConsistencyLevel.QUORUM
+			self.update_next_oid_district.consistency_level = ConsistencyLevel.QUORUM
+			self.select_item_info.consistency_level = ConsistencyLevel.QUORUM
+			self.select_tax.consistency_level = ConsistencyLevel.QUORUM
+			self.select_customer_info.consistency_level = ConsistencyLevel.QUORUM
+			self.insert_orderline.consistency_level = ConsistencyLevel.QUORUM
+			self.insert_delivery_by_customer.consistency_level = ConsistencyLevel.QUORUM
 
 	def process(self):
 		self.updateNextOrderId();

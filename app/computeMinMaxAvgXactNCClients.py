@@ -10,6 +10,7 @@ filePath = '../app/throughput.txt';
 with open(filePath, 'r+') as myFile:
 	throughputNum = [Decimal(line.rstrip()) for line in myFile]
 
+print(throughputNum)
 max_value = max(throughputNum)
 min_value = min(throughputNum)
 avg_value = sum(throughputNum)/len(throughputNum)

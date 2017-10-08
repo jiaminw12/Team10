@@ -17,9 +17,10 @@ echo -ne "Running Performance Measurement now ... \n"
 
 echo -ne "Execute $1 clients ...\n"
 let "NUM_CLIENTS = $1"
+let "CONSISTENCY_LEVEL = $2"
 
 for i in `seq 1 $NUM_CLIENTS`; do
-	./MainApp.py "$i".txt 1> ~/Team10/log/output$i.log 2> ~/Team10/log/error$i.log &
+	./MainApp.py "$i".txt "$CONSISTENCY_LEVEL" 1> ~/Team10/log/output$i.log 2> ~/Team10/log/error$i.log &
 done
 wait
 echo "completed"
