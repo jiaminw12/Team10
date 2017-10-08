@@ -37,13 +37,13 @@ cqlsh -e "CONSISTENCY ONE"
 
 bash bulkload.sh
 
-bash benchmark.sh 10 > benchmark1001.txt
+bash benchmark.sh 10 1 > benchmark1001.txt
 cp -a ~/Team10/log ~/Team10/log1001
 
-bash benchmark.sh 20 > benchmark2001.txt
+bash benchmark.sh 20 1 > benchmark2001.txt
 cp -a ~/Team10/log ~/Team10/log2001
 
-bash benchmark.sh 40 > benchmark4001.txt
+bash benchmark.sh 40 1 > benchmark4001.txt
 cp -a ~/Team10/log ~/Team10/log4001
 
 
@@ -53,13 +53,13 @@ cqlsh -e "CONSISTENCY QUORUM"
 
 bash bulkload.sh
 
-bash benchmark.sh 10 > benchmark1002.txt
+bash benchmark.sh 10 2 > benchmark1002.txt
 cp -a ~/Team10/log ~/Team10/log1002
 
-bash benchmark.sh 20 > benchmark2002.txt
+bash benchmark.sh 20 2 > benchmark2002.txt
 cp -a ~/Team10/log ~/Team10/log2002
 
-bash benchmark.sh 40 > benchmark4002.txt
+bash benchmark.sh 40 2 > benchmark4002.txt
 cp -a ~/Team10/log ~/Team10/log4002
 
 rm -rf log
