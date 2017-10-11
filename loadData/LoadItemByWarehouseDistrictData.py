@@ -21,7 +21,7 @@ for i in range (1, 100001):
 
 
 # stock
-update_stock_statement = session.prepare("UPDATE item_by_warehouse_district SET s_quantity = ? WHERE w_id = ? AND i_id = ? AND d_id IN (1,2,3,4,5,6,7,8,9,10)");
+update_stock_statement = session.prepare("UPDATE item_by_warehouse_district SET s_quantity = ? WHERE w_id = ? AND i_id = ? AND d_id IN (1,2,3,4,5,6,7,8,9,10) IF EXISTS");
 
 print("Updating Stock data ... ")
 for row in getdata('../data-files/stock.csv'):
@@ -35,7 +35,7 @@ print("Inserting Done ... ")
 
 
 # item
-update_item_statement = session.prepare("UPDATE item_by_warehouse_district SET i_name = ?, i_price = ? WHERE w_id IN (1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16) AND d_id IN (1,2,3,4,5,6,7,8,9,10) AND i_id = ?");
+update_item_statement = session.prepare("UPDATE item_by_warehouse_district SET i_name = ?, i_price = ? WHERE w_id IN (1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16) AND d_id IN (1,2,3,4,5,6,7,8,9,10) AND i_id = ? IF EXISTS");
 
 print("Updating Item data ... ")
 for row in getdata('../data-files/item.csv'):
@@ -48,7 +48,7 @@ print("Inserting Done ... ")
 
 
 # warehouse
-update_warehouse_statement = session.prepare("UPDATE item_by_warehouse_district SET w_tax = ? WHERE w_id = ? AND d_id = ? AND i_id IN (" + str + ")");
+update_warehouse_statement = session.prepare("UPDATE item_by_warehouse_district SET w_tax = ? WHERE w_id = ? AND d_id = ? AND i_id IN (" + str + ") IF EXISTS");
 
 print("Updating Warehouse data ... ")
 for row in getdata('../data-files/warehouse.csv'):
@@ -62,7 +62,7 @@ print("Inserting Done ... ")
 
 
 # district
-update_district_statement = session.prepare("UPDATE item_by_warehouse_district SET d_tax = ? WHERE w_id = ? AND d_id = ? AND i_id IN (" + str + ")");
+update_district_statement = session.prepare("UPDATE item_by_warehouse_district SET d_tax = ? WHERE w_id = ? AND d_id = ? AND i_id IN (" + str + ") IF EXISTS");
 
 print("Updating District data ... ")
 for row in getdata('../data-files/district.csv'):
