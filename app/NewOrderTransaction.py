@@ -66,7 +66,7 @@ class NewOrderTransaction():
 			self.select_customer_info.consistency_level = ConsistencyLevel.QUORUM
 			self.insert_orderline.consistency_level = ConsistencyLevel.QUORUM
 			self.insert_order_desc.consistency_level = ConsistencyLevel.QUORUM
-                        self.insert_order_asc.consistency_level = ConsistencyLevel.QUORUM
+			self.insert_order_asc.consistency_level = ConsistencyLevel.QUORUM
 
 	def process(self):
 		self.updateNextOrderId();
@@ -88,30 +88,23 @@ class NewOrderTransaction():
 		for i in range(0, self.num_items):
 			print("Item Num:%d, Name:%s, Supplier Warehouse:%d, Quantity:%d, OL Amount: %.4f, S_Quantity:%d"%(self.i_id_list[i], self.i_name_list[i], self.supplier_w_id_list[i], self.quantity_list[i], self.itemamt_list[i], self.s_quantity_list[i]));
 
-		
-	def updateStockQuantity(self,stock, wid, iid): 	
-		for i in range(1,11):
-			self.session.execute(self.update_sqty, (stock, wid, iid));		
-
-
+													 
 	def getCustomerInformation(self):
 		rows = self.session.execute(self.select_customer_info, (self.w_id, self.d_id, self.c_id));		
 		self.c_last = rows[0].c_last;
 		self.c_credit = rows[0].c_credit;
 		self.c_discount = rows[0].c_discount;
 
-
+													 
 	# Increment d_next_o_id by 1 in table DISTRICT and ITEM_BY_WAREHOUSE_DISTRICT
 	def updateNextOrderId(self):
 		rows = self.session.execute(self.select_next_oid_district, (self.w_id, self.d_id));
-		
 		self.d_next_o_id = int(rows[0].d_next_o_id) + 1;
-
 		self.session.execute(self.update_next_oid_district, (self.d_next_o_id, self.w_id, self.d_id));
 	
+													 
 	def getTaxInformation(self):
 		rows = self.session.execute(self.select_tax, (self.w_id, self.d_id));
-		
 		self.w_tax = rows[0].w_tax;
 		self.d_tax = rows[0].d_tax;
 
@@ -128,6 +121,7 @@ class NewOrderTransaction():
 			self.i_name_list[i] = rows[0][1];
 			self.s_quantity_list[i] = rows[0][2];
 
+													 
 	def updateStockItem(self, ytd, _remotecnt, wid, iid, s_qty):
 		rows = self.session.execute(self.select_cnt_stockitem, (wid, iid));
 		if rows:
@@ -135,9 +129,11 @@ class NewOrderTransaction():
 			remotecnt = rows[0].s_remote_cnt;
 			self.session.execute(self.update_stockitem,(ytd, ordercnt, remotecnt+_remotecnt, s_qty, wid, iid));
 
+													 
 	def insertCustomerByDelivery(self, ol_number, ol_amount, ol_i_id, ol_quantity, ol_supply_w_id):
 		self.session.execute(self.insert_delivery_by_customer, (self.w_id, self.d_id, self.o_id, ol_number, self.c_id, self.o_carrier_id, self.o_entry_d, ol_amount, None, ol_i_id, ol_quantity, ol_supply_w_id));
 		
+													 
 	def insertNewOrderLine(self):
 		#Fill in Order data
 		self.o_id = self.d_next_o_id;
@@ -150,11 +146,14 @@ class NewOrderTransaction():
 		self.o_all_local = int(all(x == self.o_w_id for x in self.supplier_w_id_list));
 
 		self.total_amt = 0;
+													 
+		self.session.execute(self.insert_order_desc, (self.o_w_id, self.o_d_id, self.o_id, self.o_c_id, self.o_carrier_id, self.o_ol_cnt, self.o_all_local, self.o_entry_d));
+													 
+		self.session.execute(self.insert_order_asc, (self.o_w_id, self.o_d_id, self.o_id, self.o_c_id, self.o_carrier_id, self.o_ol_cnt, self.o_all_local, self.o_entry_d));
 
 		for i in range(0, self.num_items):
 			adjusted_qty = self.s_quantity_list[i] - self.quantity_list[i];
 			adjusted_qty = adjusted_qty if adjusted_qty >= 10 else (adjusted_qty+100);
-			#self.updateStockQuantity(adjusted_qty, self.supplier_w_id_list[i], self.i_id_list[i])
 			
 			if self.supplier_w_id_list[i] != self.w_id:
 				remotecnt = 1;
@@ -172,6 +171,6 @@ class NewOrderTransaction():
 			self.ol_i_id = self.i_id_list[i];
 			self.ol_quantity = self.quantity_list[i]
 			self.ol_supply_w_id = self.supplier_w_id_list[i]
-			self.session.execute(self.insert_orderline, (self.o_w_id, self.o_d_id, self.o_id, self.o_all_local, self.o_c_id, self.o_carrier_id, self.o_entry_d, self.o_ol_cnt, self.ol_number, self.ol_amount, self.ol_dist_info, self.ol_i_id, self.ol_quantity, self.ol_supply_w_id));
-			self.insertCustomerByDelivery(self.ol_number, self.ol_amount, self.ol_i_id, self.ol_quantity, self.ol_supply_w_id);				
+													 
+			self.session.execute(self.insert_orderline, (self.o_w_id, self.o_d_id, self.o_id, self.ol_number, self.ol_i_id, None, self.ol_amount, self.ol_supply_w_id, self.ol_quantity, self.ol_dist_info))
 

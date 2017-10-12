@@ -19,7 +19,7 @@ class OrderStatusTransaction(object):
 		self.select_customer_las_order = self.session.prepare("SELECT c_first, c_middle, c_last, c_balance from payment_by_customer WHERE c_w_id = ? and c_d_id = ? and c_id = ?")
 		
 		# get the last order id
-		self.select_last_order = self.session.prepare("select o_id, o_entry_d, o_carrier_id from OrderByDesc where o_w_id = ? AND o_d_id = ? AND o_c_id = ? LIMIT 1 ALLOW FILTERING")
+		self.select_last_order = self.session.prepare("select o_id, o_entry_d, o_carrier_id from Order_By_Desc where o_w_id = ? AND o_d_id = ? AND o_c_id = ? LIMIT 1 ALLOW FILTERING")
 	
 		self.select_order = self.session.prepare("SELECT ol_i_id, ol_supply_w_id, ol_quantity, ol_amount, ol_delivery_d from OrderLine where ol_w_id = ? AND ol_d_id = ? AND ol_c_id = ? AND ol_o_id = ? ALLOW FILTERING")
 	
