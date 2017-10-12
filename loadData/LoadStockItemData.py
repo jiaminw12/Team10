@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+
+import sys
 import csv
 from decimal import *
 from cassandra.cluster import Cluster
@@ -10,8 +12,9 @@ def getdata(filename):
             yield row
 
 #  Start of program
-#cluster = Cluster(['192.168.0.1', '192.168.0.2'])
-cluster = Cluster();
+ipAddr = []
+ipAddr.append(sys.argv[1])
+cluster = Cluster(ipAddr);
 session = cluster.connect('team10')
 
 

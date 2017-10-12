@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+
+import sys
 import csv
 from decimal import *
 from datetime import datetime, date, time
@@ -14,7 +16,9 @@ def getdata(filename):
             yield row
 
 #  Start of program
-cluster = Cluster();
+ipAddr = []
+ipAddr.append(sys.argv[1])
+cluster = Cluster(ipAddr);
 session = cluster.connect('team10')
 
 

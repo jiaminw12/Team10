@@ -14,7 +14,9 @@ def getdata(filename):
             yield row
 
 #  Start of program
-cluster = Cluster(sys.argv[1]);
+ipAddr = []
+ipAddr.append(sys.argv[1])
+cluster = Cluster(ipAddr);
 session = cluster.connect('team10')
 
 update_date_time_statement = session.prepare("UPDATE delivery_by_customer SET OL_DELIVERY_D = ? WHERE o_w_id = ? AND o_d_id = ? AND o_id = ? AND ol_number = ? ");
@@ -32,10 +34,5 @@ for row in getdata('../data-files/order-line.csv'):
 print("Updating Done ... ")
                                              
 cluster.shutdown();
-
-
-
-
-
 
 
