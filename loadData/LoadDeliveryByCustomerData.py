@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+
+import sys
 import csv
 from decimal import *
 from datetime import datetime, date, time
@@ -12,7 +14,7 @@ def getdata(filename):
             yield row
 
 #  Start of program
-cluster = Cluster();
+cluster = Cluster(sys.argv[1]);
 session = cluster.connect('team10')
 
 update_date_time_statement = session.prepare("UPDATE delivery_by_customer SET OL_DELIVERY_D = ? WHERE o_w_id = ? AND o_d_id = ? AND o_id = ? AND ol_number = ? ");

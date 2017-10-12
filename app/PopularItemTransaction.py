@@ -29,7 +29,7 @@ class PopularItemTransaction(object):
 
 		self.select_max_quantity_item  = self.session.prepare("SELECT ol_i_id, ol_quantity FROM orderline WHERE o_w_id = ? AND o_d_id = ? AND o_id = ? AND ol_quantity = ? ALLOW FILTERING");
 
-		self.select_item_name = self.session.prepare("SELECT i_name FROM item_by_warehouse_district WHERE w_id = ? AND d_id = ? AND i_id = ?");
+		self.select_item_name = self.session.prepare("SELECT i_name FROM stockitem WHERE s_w_id = ? AND s_i_id = ?");
 	
 		if self.consistencyLevel == '1' :
 			self.select_d_next_o_id.consistency_level = ConsistencyLevel.ONE
@@ -98,7 +98,7 @@ class PopularItemTransaction(object):
 					for rowPopular in result_max_quantity_item:
 				
 						# 5. Find item name
-						result_item_name= self.session.execute(self.select_item_name, [int(self.w_id), int(self.d_id), rowPopular.ol_i_id])
+						result_item_name= self.session.execute(self.select_item_name, [int(self.w_id), rowPopular.ol_i_id])
 				
 						#print "I_ID: %d"%(rowPopular.ol_i_id)
 						print "I_NAME: %s"%(result_item_name[0].i_name)

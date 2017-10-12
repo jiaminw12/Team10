@@ -23,8 +23,9 @@ class StockLevelTransaction(object):
 		self.select_last_l_order = self.session.prepare("SELECT OL_I_ID FROM orderline WHERE O_W_ID = ? AND O_D_ID = ? AND O_ID >= ? AND O_ID < ?")
 		
 		# get total number of items in S where its stock quantity < T
-		self.select_quantity = self.session.prepare("SELECT count(i_id)as countno FROM ITEM_BY_WAREHOUSE_DISTRICT WHERE w_id = ? AND i_id = ? AND s_quantity < ? ALLOW FILTERING")
-	
+		#self.select_quantity = self.session.prepare("SELECT count(i_id)as countno FROM ITEM_BY_WAREHOUSE_DISTRICT WHERE w_id = ? AND i_id = ? AND s_quantity < ? ALLOW FILTERING")
+		self.select_quantity = self.session.prepare("SELECT count(s_i_id)as countno FROM stockitem WHERE s_w_id = ? AND s_i_id = ? AND s_quantity < ? ALLOW FILTERING")	
+
 		if self.consistencyLevel == '1' :
 			self.select_d_next_o_id.consistency_level = ConsistencyLevel.ONE
 			self.select_last_l_order.consistency_level = ConsistencyLevel.ONE

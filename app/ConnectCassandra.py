@@ -3,7 +3,7 @@
 from cassandra.cluster import Cluster
 
 #cluster = Cluster(['192.168.0.1', '192.168.0.2'])
-cluster = Cluster();
+#cluster = Cluster();
 
 # create a class to map to the "address" UDT
 class Address(object):
@@ -20,17 +20,20 @@ class Connect(object):
     global session;
     global cluster;
     
-    def __init__(self, keyspace):
+    def __init__(self, keyspace, ipaddress):
         self.keyspace = keyspace
-        self.session = cluster.connect(keyspace)
-        cluster.register_user_type(keyspace, 'address', Address)
+        addressList = []
+	addressList.append(ipaddress)
+	self.cluster = Cluster(addressList)
+	self.session = self.cluster.connect(keyspace)
+        self.cluster.register_user_type(keyspace, 'address', Address)
 
     def getSession(self):
         return self.session;
 
     def close(self):
         self.session.shutdown();
-        cluster.shutdown();
+        self.cluster.shutdown();
 
 
 
