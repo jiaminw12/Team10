@@ -19,15 +19,15 @@ class PopularItemTransaction(object):
 	def initPreparedStmts(self):
 		self.select_d_next_o_id = self.session.prepare("SELECT d_next_o_id FROM district WHERE d_w_id = ? AND d_id = ?");
 
-		self.select_last_order_id = self.session.prepare("SELECT o_id FROM delivery_by_customer WHERE o_w_id = ? AND o_d_id = ? AND o_id >= ? AND o_id < ?")
+		self.select_last_order_id = self.session.prepare("SELECT o_id FROM order_by_desc WHERE o_w_id = ? AND o_d_id = ? AND o_id >= ? AND o_id < ?")
 
 		self.select_last_order = self.session.prepare("SELECT o_c_id, o_entry_d FROM delivery_by_customer WHERE o_w_id = ? AND o_d_id = ? AND o_id = ?")
 
 		self.select_customer_name = self.session.prepare("SELECT c_first, c_middle, c_last FROM payment_by_customer WHERE c_w_id = ? AND c_d_id = ? AND c_id = ?")
 
-		self.select_max_quantity = self.session.prepare("SELECT max(ol_quantity) as max_quantity FROM orderline WHERE o_w_id = ? AND o_d_id = ? AND o_id = ?");
+		self.select_max_quantity = self.session.prepare("SELECT max(ol_quantity) as max_quantity FROM orderline WHERE ol_w_id = ? AND ol_d_id = ? AND ol_o_id = ?");
 
-		self.select_max_quantity_item  = self.session.prepare("SELECT ol_i_id, ol_quantity FROM orderline WHERE o_w_id = ? AND o_d_id = ? AND o_id = ? AND ol_quantity = ? ALLOW FILTERING");
+		self.select_max_quantity_item  = self.session.prepare("SELECT ol_i_id, ol_quantity FROM orderline WHERE ol_w_id = ? AND ol_d_id = ? AND ol_o_id = ? AND ol_quantity = ? ALLOW FILTERING");
 
 		self.select_item_name = self.session.prepare("SELECT i_name FROM stockitem WHERE s_w_id = ? AND s_i_id = ?");
 	

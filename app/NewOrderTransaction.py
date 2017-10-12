@@ -28,53 +28,45 @@ class NewOrderTransaction():
 
 		self.select_cnt_stockitem = self.session.prepare("SELECT s_order_cnt, s_remote_cnt from stockitem where s_w_id = ? and s_i_id = ?")
 
-		#self.update_sqty = self.session.prepare("UPDATE item_by_warehouse_district SET s_quantity = ? WHERE w_id = ? AND i_id = ? and d_id = ?");
-		
-		self.update_sqty = self.session.prepare("UPDATE stockitem SET s_quantity = ? WHERE s_w_id = ? AND s_i_id = ?");
-
-
 		self.select_next_oid_district = self.session.prepare("SELECT d_next_o_id FROM district where d_w_id = ? AND d_id = ?");
 
 		self.update_next_oid_district = self.session.prepare("UPDATE district SET d_next_o_id = ? where d_w_id = ? AND d_id = ?");
 
-		#self.insert_orderline = self.session.prepare("INSERT INTO orderline (O_W_ID, O_D_ID, O_ID, O_C_ID, O_CARRIER_ID, O_OL_CNT, O_ALL_LOCAL, O_ENTRY_D, OL_NUMBER, OL_I_ID, OL_AMOUNT,OL_SUPPLY_W_ID, OL_QUANTITY,OL_DIST_INFO) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
-
-		#self.select_item_info = self.session.prepare("SELECT i_price, i_name,  s_quantity FROM item_by_warehouse_district where w_id = ? AND i_id = ?");
-
 		self.select_item_info = self.session.prepare("SELECT i_price, i_name, s_quantity FROM stockitem where s_w_id = ? AND s_i_id = ?");
 
-		#self.select_tax = self.session.prepare("SELECT w_tax,d_tax from item_by_warehouse_district where w_id = ? and i_id = 1 and d_id = ? ");
-		
 		self.select_tax = self.session.prepare("SELECT w_tax,d_tax from item_by_warehouse_district where w_id = ? and d_id = ?");
 
 		self.select_customer_info = self.session.prepare("SELECT c_last, c_credit, c_discount from payment_by_customer where c_w_id = ? and c_d_id = ? and c_id = ?");
 
-		self.insert_orderline = self.session.prepare("INSERT INTO orderline (o_w_id, o_d_id, o_id, o_all_local, o_c_id, o_carrier_id, o_entry_d, o_ol_cnt, ol_number, ol_amount, ol_dist_info, ol_i_id, ol_quantity, ol_supply_w_id) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+		self.insert_order_desc = self.session.prepare("INSERT INTO order_by_desc (o_w_id, o_d_id, o_id, o_c_id, o_carrier_id, o_ol_cnt, o_all_local, o_entry_d) VALUES(?,?,?,?,?,?,?,?)")
 
-		self.insert_delivery_by_customer = self.session.prepare("INSERT INTO delivery_by_customer (o_w_id, o_d_id, o_id, ol_number, o_c_id, o_carrier_id, o_entry_d, ol_amount, ol_delivery_d, ol_i_id, ol_quantity, ol_supply_w_id) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)");
-	
+		self.insert_order_asc = self.session.prepare("INSERT INTO order_by_asc (o_w_id, o_d_id, o_id, o_c_id, o_carrier_id, o_ol_cnt, o_all_local, o_entry_d) VALUES
+(?,?,?,?,?,?,?,?)")
+
+		self.insert_orderline = self.session.prepare("INSERT INTO orderline (ol_w_id, ol_d_id, ol_o_id, ol_number, ol_i_id, ol_delivery_d, ol_amount, ol_supply_w_id, ol_quantity, ol_dist_info) VALUES (?,?,?,?,?,?,?,?,?,?)");
+
 		if self.consistencyLevel == '1' :
 			self.update_stockitem.consistency_level = ConsistencyLevel.ONE
 			self.select_cnt_stockitem.consistency_level = ConsistencyLevel.ONE
-			self.update_sqty.consistency_level = ConsistencyLevel.ONE
 			self.select_next_oid_district.consistency_level = ConsistencyLevel.ONE
 			self.update_next_oid_district.consistency_level = ConsistencyLevel.ONE
 			self.select_item_info.consistency_level = ConsistencyLevel.ONE
 			self.select_tax.consistency_level = ConsistencyLevel.ONE
 			self.select_customer_info.consistency_level = ConsistencyLevel.ONE
 			self.insert_orderline.consistency_level = ConsistencyLevel.ONE
-			self.insert_delivery_by_customer.consistency_level = ConsistencyLevel.ONE
+			self.insert_order_desc.consistency_level = ConsistencyLevel.ONE
+			self.insert_order_asc.consistency_level = ConsistencyLevel.ONE
 		else:
 			self.update_stockitem.consistency_level = ConsistencyLevel.QUORUM
 			self.select_cnt_stockitem.consistency_level = ConsistencyLevel.QUORUM
-			self.update_sqty.consistency_level = ConsistencyLevel.QUORUM
 			self.select_next_oid_district.consistency_level = ConsistencyLevel.QUORUM
 			self.update_next_oid_district.consistency_level = ConsistencyLevel.QUORUM
 			self.select_item_info.consistency_level = ConsistencyLevel.QUORUM
 			self.select_tax.consistency_level = ConsistencyLevel.QUORUM
 			self.select_customer_info.consistency_level = ConsistencyLevel.QUORUM
 			self.insert_orderline.consistency_level = ConsistencyLevel.QUORUM
-			self.insert_delivery_by_customer.consistency_level = ConsistencyLevel.QUORUM
+			self.insert_order_desc.consistency_level = ConsistencyLevel.QUORUM
+                        self.insert_order_asc.consistency_level = ConsistencyLevel.QUORUM
 
 	def process(self):
 		self.updateNextOrderId();
@@ -130,7 +122,6 @@ class NewOrderTransaction():
 		self.s_quantity_list = [0] * self.num_items;
 		self.itemamt_list = [0] * self.num_items;
 		
-
 		for i in range(0, self.num_items):
 			rows = self.session.execute(self.select_item_info, (self.supplier_w_id_list[i], self.i_id_list[i]));
 			self.i_price_list[i] = rows[0][0];
@@ -139,9 +130,10 @@ class NewOrderTransaction():
 
 	def updateStockItem(self, ytd, _remotecnt, wid, iid, s_qty):
 		rows = self.session.execute(self.select_cnt_stockitem, (wid, iid));
-		ordercnt = rows[0].s_order_cnt;
-		remotecnt = rows[0].s_remote_cnt;
-		self.session.execute(self.update_stockitem,(ytd, ordercnt, remotecnt+_remotecnt, s_qty, wid, iid));
+		if rows:
+			ordercnt = rows[0].s_order_cnt;
+			remotecnt = rows[0].s_remote_cnt;
+			self.session.execute(self.update_stockitem,(ytd, ordercnt, remotecnt+_remotecnt, s_qty, wid, iid));
 
 	def insertCustomerByDelivery(self, ol_number, ol_amount, ol_i_id, ol_quantity, ol_supply_w_id):
 		self.session.execute(self.insert_delivery_by_customer, (self.w_id, self.d_id, self.o_id, ol_number, self.c_id, self.o_carrier_id, self.o_entry_d, ol_amount, None, ol_i_id, ol_quantity, ol_supply_w_id));
@@ -169,7 +161,7 @@ class NewOrderTransaction():
 			else:
 				remotecnt = 0;
 
-			self.updateStockItem(self.quantity_list[i], remotecnt,adjusted_qty, self.supplier_w_id_list[i], self.i_id_list[i]);
+			self.updateStockItem(self.quantity_list[i], remotecnt, adjusted_qty, self.supplier_w_id_list[i], self.i_id_list[i]);
 			itemamt = self.quantity_list[i] * self.i_price_list[i]
 			self.itemamt_list[i] = itemamt;
 			self.total_amt += itemamt
