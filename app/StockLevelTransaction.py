@@ -20,7 +20,7 @@ class StockLevelTransaction(object):
 		# get the next_o_id N
 		self.select_d_next_o_id = self.session.prepare("SELECT D_NEXT_O_ID FROM district WHERE d_w_id = ? AND d_id = ?")
 		# get set of items from the last L orders
-		self.select_last_l_order = self.session.prepare("SELECT OL_I_ID FROM orderline WHERE O_W_ID = ? AND O_D_ID = ? AND O_ID >= ? AND O_ID < ?")
+		self.select_last_l_order = self.session.prepare("SELECT OL_I_ID FROM orderline WHERE OL_W_ID = ? AND OL_D_ID = ? AND OL_O_ID >= ? AND OL_O_ID < ?")
 		
 		# get total number of items in S where its stock quantity < T
 		#self.select_quantity = self.session.prepare("SELECT count(i_id)as countno FROM ITEM_BY_WAREHOUSE_DISTRICT WHERE w_id = ? AND i_id = ? AND s_quantity < ? ALLOW FILTERING")
