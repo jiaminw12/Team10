@@ -34,21 +34,29 @@ cqlsh ${lines[0]} -e "copy team10.stockitem (S_W_ID, S_I_ID, S_QUANTITY, S_YTD, 
 # Load Payment_by_Customer
 ./LoadPaymentByCustomerData.py ${lines[0]}
 
-cqlsh ${lines[0]} -e "copy team10.orderline (O_W_ID, O_D_ID, O_ID, OL_NUMBER, OL_I_ID, O_ENTRY_D, OL_AMOUNT, OL_SUPPLY_W_ID, OL_QUANTITY, OL_DIST_INFO) from '~/Team10/data-files/order-line.csv' WITH NULL = 'null';";
 
-# Update orderline
-./LoadOrderLineData.py ${lines[0]}
+# Load OrderByDesc, OrderByAsc
+cp ~/Team10/data-files/order.csv ~/Team10/data-files/order_copy.csv
+
+sed -i -e 's/,null,/,0,/g' -e 's/^null,/0,/' -e 's/0,null,/0,0,/g' -e 's/,null$/,0/' order_copy.csv
+
+cqlsh ${lines[0]} -e "copy team10.OrderByDesc (O_W_ID, O_D_ID, O_ID, O_C_ID, O_CARRIER_ID, O_OL_CNT, O_ALL_LOCAL, O_ENTRY_D) from '~/Team10/data-files/order.csv' WITH NULL = 'null';";
+
+./LoadOrderData.py ${lines[0]}
 
 # create a dummy csv
 cp ~/Team10/data-files/warehouse.csv ~/Team10/data-files/order-line02.csv
-cp ~/Team10/data-files/warehouse.csv ~/Team10/data-files/order-line03.csv
 
-cqlsh ${lines[0]} -e "copy team10.orderline (O_W_ID, O_D_ID, O_ID, O_C_ID, O_CARRIER_ID, O_ENTRY_D, OL_NUMBER, OL_I_ID, OL_AMOUNT, OL_SUPPLY_W_ID, OL_QUANTITY) TO '/home/stuproj/cs4224j/Team10/data-files/order-line02.csv';"
+cqlsh ${lines[0]} -e "copy team10.OrderByDesc TO '/home/stuproj/cs4224j/Team10/data-files/order-line02.csv'";
 
-# Load Delivery_by_Customer
-cqlsh ${lines[0]} -e "copy team10.delivery_by_customer (O_W_ID, O_D_ID, O_ID, O_C_ID, O_CARRIER_ID, O_ENTRY_D, OL_NUMBER, OL_I_ID, OL_AMOUNT, OL_SUPPLY_W_ID, OL_QUANTITY) from '/home/stuproj/cs4224j/Team10/data-files/order-line02.csv';"
+cqlsh ${lines[0]} -e "copy team10.OrderByAsc FROM '/home/stuproj/cs4224j/Team10/data-files/order-line02.csv';"
 
-./LoadDeliveryByCustomerData.py ${lines[0]}
+
+# Load OrderLine
+cqlsh ${lines[0]} -e "copy team10.orderline (OL_W_ID, OL_D_ID, OL_O_ID, OL_NUMBER, OL_I_ID, OL_DELIVERY_D, OL_AMOUNT, OL_SUPPLY_W_ID, OL_QUANTITY, OL_DIST_INFO) from '~/Team10/data-files/order-line.csv' WITH NULL = 'null';";
+
+./LoadOrderLineData.py
+
 
 # Load Item_by_Warehouse_District
 cqlsh ${lines[0]} -e "copy team10.district (d_w_id, d_id) TO '/home/stuproj/cs4224j/Team10/data-files/order-line02.csv'";

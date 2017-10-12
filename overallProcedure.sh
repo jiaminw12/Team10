@@ -30,37 +30,42 @@ else
 	echo -ne "Done...\n"
 fi
 
+nodetool status | awk '/^(U|D)(N|L|J|M)/{print $2}' > nodeList.txt
+
+IFS=$'\n' read -d '' -r -a lines < nodeList.txt
+
+bash bulkload.sh
+#bash ~/Team10/copyTableScript/copyAllTableData.sh
+
+#cd ~/Team10
 
 # ONE
 # The consistency level defaults to ONE for all write and read operations.
-cqlsh -e "CONSISTENCY ONE"
+#cqlsh ${lines[0]}  -e "CONSISTENCY ONE"
 
-bash bulkload.sh
+#bash ~/Team10/benchmark/benchmark10.sh 1 > benchmark1001.txt
+#cp -a ~/Team10/log ~/Team10/log1001
 
-bash benchmark.sh 10 1 > benchmark1001.txt
-cp -a ~/Team10/log ~/Team10/log1001
+#bash ~/Team10/benchmark/benchmark20.sh 1 > benchmark2001.txt
+#cp -a ~/Team10/log ~/Team10/log2001
 
-bash benchmark.sh 20 1 > benchmark2001.txt
-cp -a ~/Team10/log ~/Team10/log2001
+#bash ~/Team10/benchmark/benchmark40.sh 1 > benchmark4001.txt
+#cp -a ~/Team10/log ~/Team10/log4001
 
-bash benchmark.sh 40 1 > benchmark4001.txt
-cp -a ~/Team10/log ~/Team10/log4001
-
+#bash bulkload02.sh
+#bash ~/Team10/copyTableScript/copyAllTableData.sh
 
 # QUORUM
-# The consistency level changes to QUORUM for all write and read operations.
-cqlsh -e "CONSISTENCY QUORUM"
+# The consistency level defaults to QUORUM for all write and read operations.
+#cqlsh ${lines[0]}  -e "CONSISTENCY QUORUM"
 
-bash bulkload.sh
+#bash ~/Team10/benchmark/benchmark10.sh 2 > benchmark1002.txt
+#cp -a ~/Team10/log ~/Team10/log1002
 
-bash benchmark.sh 10 2 > benchmark1002.txt
-cp -a ~/Team10/log ~/Team10/log1002
+#bash ~/Team10/benchmark/benchmark20.sh 2 > benchmark2002.txt
+#cp -a ~/Team10/log ~/Team10/log2002
 
-bash benchmark.sh 20 2 > benchmark2002.txt
-cp -a ~/Team10/log ~/Team10/log2002
+#bash ~/Team10/benchmark/benchmark40.sh 2 > benchmark4002.txt
+#cp -a ~/Team10/log ~/Team10/log4002
 
-bash benchmark.sh 40 2 > benchmark4002.txt
-cp -a ~/Team10/log ~/Team10/log4002
-
-rm -rf log
 

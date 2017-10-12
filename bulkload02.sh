@@ -17,18 +17,19 @@ cd /temp/apache-cassandra-3.11.0/bin
 
 echo -ne "Loading WAREHOUSE, DISTRICT, ORDER-LINE, STOCK-ITEM, PAYMENT_BY_CUSTOMER ITEM_BY_WAREHOUSE_DISTRICT and DELIVERY_BY_CUSTOMER data\n"
 
-
 cqlsh ${lines[0]} -e "copy team10.district from '/home/stuproj/cs4224j/Team10/data-files-backup/district.csv';"
+
+cqlsh ${lines[0]} -e "copy team10.warehouse from '/home/stuproj/cs4224j/Team10/data-files-backup/warehouse.csv'"
 
 cqlsh ${lines[0]} -e "copy team10.item_by_warehouse_district FROM '/home/stuproj/cs4224j/Team10/data-files-backup/item_by_warehouse_district.csv';"
 
-cqlsh ${lines[0]} -e "copy team10.delivery_by_customer from '/home/stuproj/cs4224j/Team10/data-files-backup/delivery_by_customer.csv'"
+cqlsh ${lines[0]} -e "copy team10.orderbydesc from '/home/stuproj/cs4224j/Team10/data-files-backup/orderbydesc.csv'"
+
+cqlsh ${lines[0]} -e "copy team10.orderbyasc from '/home/stuproj/cs4224j/Team10/data-files-backup/orderbyasc.csv'"
 
 cqlsh ${lines[0]} -e "copy team10.orderline from '/home/stuproj/cs4224j/Team10/data-files-backup/orderline.csv'"
 
 cqlsh ${lines[0]} -e "copy team10.stockitem from '/home/stuproj/cs4224j/Team10/data-files-backup/stockitem.csv'"
-
-cqlsh ${lines[0]} -e "copy team10.warehouse from '/home/stuproj/cs4224j/Team10/data-files-backup/warehouse.csv'"
 
 cqlsh ${lines[0]} -e "copy team10.payment_by_customer from '/home/stuproj/cs4224j/Team10/data-files-backup/payment_by_customer.csv'"
 
