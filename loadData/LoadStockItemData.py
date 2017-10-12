@@ -18,8 +18,7 @@ cluster = Cluster(ipAddr);
 session = cluster.connect('team10')
 
 
-update_statement = session.prepare("UPDATE stockitem SET i_name = ?, i_data = ?, i_im_id = ?, i_price = ? WHERE S_W_ID IN (1,2,3
-,4,5,6,7,8,9,10,11,12,13,14,15,16) AND S_I_ID = ?");
+update_statement = session.prepare("UPDATE stockitem SET i_name = ?, i_data = ?, i_im_id = ?, i_price = ? WHERE S_W_ID IN (1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16) AND S_I_ID = ?");
 
 print("Updating StockItem data ... ")
 for row in getdata('../data-files/item.csv'):
