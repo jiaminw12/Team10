@@ -2,15 +2,15 @@ DROP MATERIALIZED VIEW IF EXISTS team10.Top_Balance;
 DROP TABLE IF EXISTS team10.Warehouse;
 DROP TABLE IF EXISTS team10.District;
 DROP TABLE IF EXISTS team10.OrderLine;
-DROP TABLE IF EXISTS team10.OrderByDesc;
-DROP TABLE IF EXISTS team10.OrderByAsc;
+DROP TABLE IF EXISTS team10.Order_by_Desc;
+DROP TABLE IF EXISTS team10.Order_by_Asc;
 DROP TABLE IF EXISTS team10.StockItem;
 DROP TABLE IF EXISTS team10.Payment_by_Customer;
 DROP TABLE IF EXISTS team10.Item_by_Warehouse_District;
 
 DROP KEYSPACE IF EXISTS team10;
 
-CREATE KEYSPACE team10 WITH replication = {'class':'SimpleStrategy','replication_factor':3};
+CREATE KEYSPACE team10 WITH replication = {'class':'SimpleStrategy','replication_factor':1};
 
 CREATE TYPE team10.address (
 	STREET_1 text,
@@ -40,7 +40,7 @@ CREATE TABLE team10.District (
 	PRIMARY KEY (D_W_ID, D_ID)
 );
 
-CREATE TABLE team10.OrderByAsc (
+CREATE TABLE team10.Order_by_Asc (
 	O_W_ID int,
 	O_D_ID int,
 	O_ID int,
@@ -52,9 +52,9 @@ CREATE TABLE team10.OrderByAsc (
 	PRIMARY KEY ((O_W_ID, O_D_ID), O_ID)
 ) WITH CLUSTERING ORDER BY (O_ID ASC);
 
-ALTER TABLE team10.OrderByAsc WITH GC_GRACE_SECONDS = 0;
+ALTER TABLE team10.Order_By_Asc WITH GC_GRACE_SECONDS = 0;
 
-CREATE TABLE team10.OrderByDesc (
+CREATE TABLE team10.Order_by_Desc (
 	O_W_ID int,
 	O_D_ID int,
 	O_ID int,
@@ -66,9 +66,9 @@ CREATE TABLE team10.OrderByDesc (
 	PRIMARY KEY ((O_W_ID, O_D_ID), O_ID)
 ) WITH CLUSTERING ORDER BY (O_ID DESC);
 
-ALTER TABLE team10.OrderByDesc WITH GC_GRACE_SECONDS = 0;
+ALTER TABLE team10.Order_By_Desc WITH GC_GRACE_SECONDS = 0;
 
-CREATE TABLE OrderLine (
+CREATE TABLE team10.OrderLine (
 	OL_W_ID int,
 	OL_D_ID int,
 	OL_O_ID int,
@@ -151,6 +151,4 @@ CREATE TABLE team10.Item_by_Warehouse_District (
 	D_TAX decimal,
 	PRIMARY KEY (W_ID, D_ID)
 ) WITH CLUSTERING ORDER BY (D_ID ASC);
-
-ALTER TABLE team10.Item_by_Warehouse_District WITH GC_GRACE_SECONDS = 0;
 

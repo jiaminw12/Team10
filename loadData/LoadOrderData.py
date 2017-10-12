@@ -21,7 +21,7 @@ ipAddr.append(sys.argv[1])
 cluster = Cluster(ipAddr);
 session = cluster.connect('team10')
 
-update_statement = session.prepare("UPDATE OrderByDesc SET o_entry_d = ? WHERE o_w_id = ? AND o_d_id = ? AND o_id = ?");
+update_statement = session.prepare("UPDATE Order_By_Desc SET o_entry_d = ? WHERE o_w_id = ? AND o_d_id = ? AND o_id = ?");
 
 print("Updating Order data ... ")
 for row in getdata('../data-files/order.csv'):
