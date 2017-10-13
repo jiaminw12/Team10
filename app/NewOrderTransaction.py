@@ -40,8 +40,7 @@ class NewOrderTransaction():
 
 		self.insert_order_desc = self.session.prepare("INSERT INTO order_by_desc (o_w_id, o_d_id, o_id, o_c_id, o_carrier_id, o_ol_cnt, o_all_local, o_entry_d) VALUES(?,?,?,?,?,?,?,?)")
 
-		self.insert_order_asc = self.session.prepare("INSERT INTO order_by_asc (o_w_id, o_d_id, o_id, o_c_id, o_carrier_id, o_ol_cnt, o_all_local, o_entry_d) VALUES
-(?,?,?,?,?,?,?,?)")
+		self.insert_order_asc = self.session.prepare("INSERT INTO order_by_asc (o_w_id, o_d_id, o_id, o_c_id, o_carrier_id, o_ol_cnt, o_all_local, o_entry_d) VALUES (?,?,?,?,?,?,?,?)")
 
 		self.insert_orderline = self.session.prepare("INSERT INTO orderline (ol_w_id, ol_d_id, ol_o_id, ol_number, ol_i_id, ol_delivery_d, ol_amount, ol_supply_w_id, ol_quantity, ol_dist_info) VALUES (?,?,?,?,?,?,?,?,?,?)");
 

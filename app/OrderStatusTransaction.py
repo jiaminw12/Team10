@@ -21,7 +21,7 @@ class OrderStatusTransaction(object):
 		# get the last order id
 		self.select_last_order = self.session.prepare("select o_id, o_entry_d, o_carrier_id from Order_By_Desc where o_w_id = ? AND o_d_id = ? AND o_c_id = ? LIMIT 1 ALLOW FILTERING")
 	
-		self.select_order = self.session.prepare("SELECT ol_i_id, ol_supply_w_id, ol_quantity, ol_amount, ol_delivery_d from OrderLine where ol_w_id = ? AND ol_d_id = ? AND ol_c_id = ? AND ol_o_id = ? ALLOW FILTERING")
+		self.select_order = self.session.prepare("SELECT ol_i_id, ol_supply_w_id, ol_quantity, ol_amount, ol_delivery_d from OrderLine where ol_w_id = ? AND ol_d_id = ? AND ol_o_id = ? ALLOW FILTERING")
 	
 		if self.consistencyLevel == '1' :
 			self.select_customer_las_order.consistency_level = ConsistencyLevel.ONE
@@ -35,7 +35,7 @@ class OrderStatusTransaction(object):
 	def process(self):
 		
 		orderid = self.session.execute(self.select_last_order, (int(self.c_w_id), int(self.c_d_id), int(self.c_id)))
-
+		
 		if orderid :
 			lastorder = orderid[0]
 
@@ -47,7 +47,7 @@ class OrderStatusTransaction(object):
 			print "Customer name: %s %s %s, Balance amount: %2f\n"%(customer.c_first, customer.c_middle, customer.c_last, customer.c_balance)
 
 			# print order with items
-			orderdetails = self.session.execute(self.select_order,(int(self.c_w_id), int(self.c_d_id), int(self.c_id), int(lastorder.o_id)))
+			orderdetails = self.session.execute(self.select_order,(int(self.c_w_id), int(self.c_d_id), int(lastorder.o_id)))
 			temp = orderdetails[0];
 			print "order ID: %d\t Entry Date: %s\t Carrier ID: %s\t\n" % (lastorder.o_id, lastorder.o_entry_d, lastorder.o_carrier_id)
 		

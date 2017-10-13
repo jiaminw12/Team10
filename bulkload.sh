@@ -34,7 +34,6 @@ cqlsh ${lines[0]} -e "copy team10.stockitem (S_W_ID, S_I_ID, S_QUANTITY, S_YTD, 
 # Load Payment_by_Customer
 ./LoadPaymentByCustomerData.py ${lines[0]}
 
-
 # Load OrderByDesc, OrderByAsc
 cp ~/Team10/data-files/order.csv ~/Team10/data-files/order_copy.csv
 

@@ -10,7 +10,7 @@ DROP TABLE IF EXISTS team10.Item_by_Warehouse_District;
 
 DROP KEYSPACE IF EXISTS team10;
 
-CREATE KEYSPACE team10 WITH replication = {'class':'SimpleStrategy','replication_factor':1};
+CREATE KEYSPACE team10 WITH replication = {'class':'SimpleStrategy','replication_factor':3};
 
 CREATE TYPE team10.address (
 	STREET_1 text,

@@ -21,7 +21,7 @@ class PopularItemTransaction(object):
 
 		self.select_last_order_id = self.session.prepare("SELECT o_id FROM order_by_desc WHERE o_w_id = ? AND o_d_id = ? AND o_id >= ? AND o_id < ?")
 
-		self.select_last_order = self.session.prepare("SELECT o_c_id, o_entry_d FROM delivery_by_customer WHERE o_w_id = ? AND o_d_id = ? AND o_id = ?")
+		self.select_last_order = self.session.prepare("SELECT o_c_id, o_entry_d FROM order_by_desc WHERE o_w_id = ? AND o_d_id = ? AND o_id = ?")
 
 		self.select_customer_name = self.session.prepare("SELECT c_first, c_middle, c_last FROM payment_by_customer WHERE c_w_id = ? AND c_d_id = ? AND c_id = ?")
 

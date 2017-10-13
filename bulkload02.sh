@@ -23,9 +23,9 @@ cqlsh ${lines[0]} -e "copy team10.warehouse from '/home/stuproj/cs4224j/Team10/d
 
 cqlsh ${lines[0]} -e "copy team10.item_by_warehouse_district FROM '/home/stuproj/cs4224j/Team10/data-files-backup/item_by_warehouse_district.csv';"
 
-cqlsh ${lines[0]} -e "copy team10.orderbydesc from '/home/stuproj/cs4224j/Team10/data-files-backup/orderbydesc.csv'"
+cqlsh ${lines[0]} -e "copy team10.order_by_desc from '/home/stuproj/cs4224j/Team10/data-files-backup/order_by_desc.csv'"
 
-cqlsh ${lines[0]} -e "copy team10.orderbyasc from '/home/stuproj/cs4224j/Team10/data-files-backup/orderbyasc.csv'"
+cqlsh ${lines[0]} -e "copy team10.order_by_asc from '/home/stuproj/cs4224j/Team10/data-files-backup/order_by_asc.csv'"
 
 cqlsh ${lines[0]} -e "copy team10.orderline from '/home/stuproj/cs4224j/Team10/data-files-backup/orderline.csv'"
 
