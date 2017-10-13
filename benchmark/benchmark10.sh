@@ -53,25 +53,25 @@ wait
 rm ~/Team10/app/throughput.txt
 
 # Part 4
-#echo -ne "\n1. SELECT sum(W_YTD) FROM team10.Warehouse ... \n"
+echo -ne "\n1. SELECT sum(W_YTD) FROM team10.Warehouse ... \n"
 cqlsh ${lines[0]} -e "SELECT sum(W_YTD) FROM team10.Warehouse;"
 
-#echo -ne "2. SELECT sum(D_YTD), sum(D_NEXT_O_ID) FROM team10.District ... \n"
+echo -ne "2. SELECT sum(D_YTD), sum(D_NEXT_O_ID) FROM team10.District ... \n"
 cqlsh ${lines[0]} -e "SELECT sum(D_YTD), sum(D_NEXT_O_ID) FROM team10.District;"
 
-#echo -ne "3. SELECT sum(C_BALANCE), sum(C_YTD_PAYMENT), sum(C_PAYMENT_CNT), sum(C_DELIVERY_CNT) FROM team10.payment_by_customer ... \n"
+echo -ne "3. SELECT sum(C_BALANCE), sum(C_YTD_PAYMENT), sum(C_PAYMENT_CNT), sum(C_DELIVERY_CNT) FROM team10.payment_by_customer ... \n"
 cqlsh ${lines[0]} -e "SELECT sum(C_BALANCE), sum(C_YTD_PAYMENT), sum(C_PAYMENT_CNT), sum(C_DELIVERY_CNT) FROM team10.payment_by_customer;"
 
-#echo -ne "4. SELECT max(O_ID), sum(O_OL_CNT) FROM team10.orderline ... \n"
-cqlsh ${lines[0]} -e "SELECT max(O_ID), sum(O_OL_CNT) FROM team10.orderline;"
+echo -ne "4. SELECT max(O_ID), sum(O_OL_CNT) FROM team10.order_by_asc ... \n"
+cqlsh ${lines[0]} -e "SELECT max(O_ID), sum(O_OL_CNT) FROM team10.order_by_asc;"
 
-#echo -ne "5. SELECT sum(OL_AMOUNT), sum(OL_QUANTITY) FROM team10.delivery_by_customer ... \n"
-cqlsh ${lines[0]} -e "SELECT sum(OL_AMOUNT), sum(OL_QUANTITY) FROM team10.delivery_by_customer;"
+echo -ne "5. SELECT sum(OL_AMOUNT), sum(OL_QUANTITY) FROM team10.orderline ... \n"
+cqlsh ${lines[0]} -e "SELECT sum(OL_AMOUNT), sum(OL_QUANTITY) FROM team10.orderline;"
 
-#echo -ne "6. SELECT sum(S_QUANTITY) FROM team10.item_by_warehouse_district ... \n"
+echo -ne "6. SELECT sum(S_QUANTITY) FROM team10.item_by_warehouse_district ... \n"
 cqlsh ${lines[0]} -e "SELECT sum(S_QUANTITY) FROM team10.stockitem;"
 
-#echo -ne "7. SELECT sum(S_YTD), sum(S_ORDER_CNT), sum(S_REMOTE_CNT) FROM team10.stockitem ... \n"
+echo -ne "7. SELECT sum(S_YTD), sum(S_ORDER_CNT), sum(S_REMOTE_CNT) FROM team10.stockitem ... \n"
 cqlsh ${lines[0]} -e "SELECT sum(S_YTD), sum(S_ORDER_CNT), sum(S_REMOTE_CNT) FROM team10.stockitem;"
 
 exit

@@ -34,44 +34,50 @@ nodetool status | awk '/^(U|D)(N|L|J|M)/{print $2}' > nodeList.txt
 
 IFS=$'\n' read -d '' -r -a lines < nodeList.txt
 
-#bash bulkload.sh
-#bash ~/Team10/copyTableScript/copyAllTableData.sh
-
-bash bulkload02.sh
+# Load all data to all tables
+bash bulkload.sh
+# Copy all data from all tables
+bash ~/Team10/copyTableScript/copyAllTableData.sh
 cd ~/Team10
 
-# ONE
-# The consistency level defaults to ONE for all write and read operations.
-cqlsh ${lines[0]}  -e "CONSISTENCY ONE"
 
-bash ~/Team10/benchmark/benchmark10.sh 1 > benchmark1001.txt
+# 10 clients
+cqlsh ${lines[0]}  -e "CONSISTENCY ONE"
+bash ~/Team10/benchmark/benchmark10.sh 1 > benchmarkResult1001.txt
 cp -a ~/Team10/log ~/Team10/log1001
 
-rm -rf log
+bash bulkload02.sh
+cd ~/Team10
+cqlsh ${lines[0]}  -e "CONSISTENCY QUORUM"
+bash ~/Team10/benchmark/benchmark10.sh 2 > benchmarkResult1002.txt
+cp -a ~/Team10/log ~/Team10/log1002
 
-#bash ~/Team10/benchmark/benchmark20.sh 1 > benchmark2001.txt
-#cp -a ~/Team10/log ~/Team10/log2001
 
-#bash ~/Team10/benchmark/benchmark40.sh 1 > benchmark4001.txt
-#cp -a ~/Team10/log ~/Team10/log4001
+# 20 clients
+bash bulkload02.sh
+cd ~/Team10
+cqlsh ${lines[0]}  -e "CONSISTENCY ONE"
+bash ~/Team10/benchmark/benchmark20.sh 1 > benchmarkResult2001.txt
+cp -a ~/Team10/log ~/Team10/log2001
 
 bash bulkload02.sh
 cd ~/Team10
-#bash ~/Team10/copyTableScript/copyAllTableData.sh
-
-# QUORUM
-# The consistency level defaults to QUORUM for all write and read operations.
 cqlsh ${lines[0]}  -e "CONSISTENCY QUORUM"
+bash ~/Team10/benchmark/benchmark20.sh 2 > benchmarkResult2002.txt
+cp -a ~/Team10/log ~/Team10/log2002
 
-bash ~/Team10/benchmark/benchmark10.sh 2 > benchmark1002.txt
-cp -a ~/Team10/log ~/Team10/log1002
 
+# 40 clients
+bash bulkload02.sh
+cd ~/Team10
+cqlsh ${lines[0]}  -e "CONSISTENCY ONE"
+bash ~/Team10/benchmark/benchmark40.sh 1 > benchmarkResult4001.txt
+cp -a ~/Team10/log ~/Team10/log4001
+
+bash bulkload02.sh
+cd ~/Team10
+cqlsh ${lines[0]}  -e "CONSISTENCY QUORUM"
+bash ~/Team10/benchmark/benchmark40.sh 2 > benchmarkResult4002.txt
+cp -a ~/Team10/log ~/Team10/log4002
 rm -rf log
-
-#bash ~/Team10/benchmark/benchmark20.sh 2 > benchmark2002.txt
-#cp -a ~/Team10/log ~/Team10/log2002
-
-#bash ~/Team10/benchmark/benchmark40.sh 2 > benchmark4002.txt
-#cp -a ~/Team10/log ~/Team10/log4002
-
 
