@@ -15,7 +15,8 @@ IFS=$'\n' read -d '' -r -a lines < nodeList.txt
 cd /temp/apache-cassandra-3.11.0/bin
 ./cqlsh ${lines[0]} -f ~/Team10/schema.cql
 
-echo -ne "Loading WAREHOUSE, DISTRICT, ORDER-LINE, STOCK-ITEM, PAYMENT_BY_CUSTOMER ITEM_BY_WAREHOUSE_DISTRICT and DELIVERY_BY_CUSTOMER data\n"
+echo -ne "Loading WAREHOUSE, DISTRICT, ORDER-LINE, STOCK-ITEM, PAYMENT_BY_CUSTOMER ITEM_BY_WAREHOUSE_DISTRICT and ORDER_BY_DES
+C, ORDER_BY_ASC data\n"
 
 cqlsh ${lines[0]} -e "copy team10.district from '/home/stuproj/cs4224j/Team10/data-files-backup/district.csv';"
 
