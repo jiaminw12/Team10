@@ -2,10 +2,17 @@
 
 # The following script allows user to benchmark Cassandra performance
 # Enter arguments to select the data to benchmark:
-# bash benchmark.sh arg0
+# For 10 clients:
+#	bash ~/Team10/benchmark/benchmark10.sh arg0
+# For 20 clients:
+#	bash ~/Team10/benchmark/benchmark20.sh arg0
+# For 40 clients:
+#	bash ~/Team10/benchmark/benchmark40.sh arg0
 
 # arg0 can have the following values:
-#		arg0: Number of clients - 10, 20, 40
+#		arg0: Consistency Level - 1, 2
+#		1 - ONE
+#		2 - QUORUM
 
 declare -r DATA_FOLDER="data-files"
 declare -r XACT_FOLDER="xact-files"
@@ -28,10 +35,10 @@ else
 	rm -Rf 4224-project-files
 	rm -Rf 4224-project-files.zip
 	echo -ne "Done...\n"
-	
-	nodetool status | awk '/^(U|D)(N|L|J|M)/{print $2}' > nodeList.txt
 fi
 
+
+nodetool status | awk '/^(U|D)(N|L|J|M)/{print $2}' > nodeList.txt
 IFS=$'\n' read -d '' -r -a lines < nodeList.txt
 
 # Load all data to all tables
