@@ -19,7 +19,7 @@ cd ~/Team10/app
 chmod +x *.py
 echo -ne "Running Performance Measurement now ... \n"
 
-echo -ne "Execute $1 clients ...\n"
+echo -ne "Execute 20 clients ...\n"
 let "CONSISTENCY_LEVEL = $1"
 
 for i in 5 10 15 20; do

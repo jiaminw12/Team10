@@ -19,30 +19,30 @@ cd ~/Team10/app
 chmod +x *.py
 echo -ne "Running Performance Measurement now ... \n"
 
-echo -ne "Execute 10 clients ...\n"
+echo -ne "Execute 40 clients ...\n"
 let "CONSISTENCY_LEVEL = $1"
 
-for i in 5 10; do
+for i in 5 10 15 20 25 30 35 40; do
 	echo -ne "./MainApp.py $i.txt $CONSISTENCY_LEVEL ... \n"
 	./MainApp.py "$i".txt "$CONSISTENCY_LEVEL" "${lines[0]}" 1> ~/Team10/log/output$i.log 2> ~/Team10/log/error$i.log &
 done
 
-for i in 1 6; do
+for i in 1 6 11 16 21 26 31 36; do
 	echo -ne "./MainApp.py $i.txt $CONSISTENCY_LEVEL ... \n"
 	./MainApp.py "$i".txt "$CONSISTENCY_LEVEL" "${lines[1]}" 1> ~/Team10/log/output$i.log 2> ~/Team10/log/error$i.log &
 done
 
-for i in 2 7; do
+for i in 2 7 12 17 22 27 32 37; do
 	echo -ne "./MainApp.py $i.txt $CONSISTENCY_LEVEL ... \n"
 	./MainApp.py "$i".txt "$CONSISTENCY_LEVEL" "${lines[2]}" 1> ~/Team10/log/output$i.log 2> ~/Team10/log/error$i.log &
 done
 
-for i in 3 8; do
+for i in 3 8 13 18 23 28 33 38; do
 	echo -ne "./MainApp.py $i.txt $CONSISTENCY_LEVEL ... \n"
 	./MainApp.py "$i".txt "$CONSISTENCY_LEVEL" "${lines[3]}" 1> ~/Team10/log/output$i.log 2> ~/Team10/log/error$i.log &
 done
 
-for i in 4 9; do
+for i in 4 9 14 19 24 29 34 39; do
 	echo -ne "./MainApp.py $i.txt $CONSISTENCY_LEVEL ... \n"
 	./MainApp.py "$i".txt "$CONSISTENCY_LEVEL" "${lines[4]}" 1> ~/Team10/log/output$i.log 2> ~/Team10/log/error$i.log &
 done
