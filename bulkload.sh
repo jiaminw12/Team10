@@ -54,7 +54,7 @@ cqlsh ${lines[0]} -e "copy team10.Order_By_Asc FROM '/home/stuproj/cs4224j/Team1
 # Load OrderLine
 cqlsh ${lines[0]} -e "copy team10.orderline (OL_W_ID, OL_D_ID, OL_O_ID, OL_NUMBER, OL_I_ID, OL_DELIVERY_D, OL_AMOUNT, OL_SUPPLY_W_ID, OL_QUANTITY, OL_DIST_INFO) from '~/Team10/data-files/order-line.csv' WITH NULL = 'null';";
 
-./LoadOrderLineData.py
+./LoadOrderLineData.py ${lines[0]}
 
 
 # Load Item_by_Warehouse_District
