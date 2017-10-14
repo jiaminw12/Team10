@@ -66,7 +66,7 @@ class PopularItemTransaction(object):
 		
 		for row in result_last_order_id:
 
-			o_id = int(row)
+			o_id = int(row[0])
 			
 			result_last_order = self.session.execute(self.select_last_order, [int(self.w_id), int(self.d_id), o_id])
 			
