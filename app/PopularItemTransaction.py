@@ -64,14 +64,7 @@ class PopularItemTransaction(object):
 
 		result_last_order_id = self.session.execute(self.select_last_order_id, [int(self.w_id), int(self.d_id), startOrderId, nextAvailableOrderNum])
 		
-		# Remove duplicated order number
-		numList = []
-		for rowOId in result_last_order_id:
-			numList.append(rowOId[0])
-
-		numList = list(set(numList))
-		
-		for row in numList:
+		for row in result_last_order_id:
 
 			o_id = int(row)
 			
@@ -118,10 +111,5 @@ class PopularItemTransaction(object):
 			print "I_NAME: %s"%(key)
 			print "Percentage of orders in S: %0.2f"%(Decimal(int(value)/int(self.numOfLastOrder)*100))
 			print "\n"
-
-
-
-
-
 
 
