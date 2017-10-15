@@ -46,9 +46,9 @@ cqlsh ${lines[0]} -e "copy team10.Order_By_Desc (O_W_ID, O_D_ID, O_ID, O_C_ID, O
 # create a dummy csv
 cp ~/Team10/data-files/warehouse.csv ~/Team10/data-files/order-line02.csv
 
-cqlsh ${lines[0]} -e "copy team10.Order_By_Desc TO '/home/stuproj/cs4224j/Team10/data-files/order-line02.csv'";
+cqlsh ${lines[0]} -e "copy team10.Order_By_Desc TO '~/Team10/data-files/order-line02.csv'";
 
-cqlsh ${lines[0]} -e "copy team10.Order_By_Asc FROM '/home/stuproj/cs4224j/Team10/data-files/order-line02.csv';"
+cqlsh ${lines[0]} -e "copy team10.Order_By_Asc FROM '~/Team10/data-files/order-line02.csv';"
 
 
 # Load OrderLine
@@ -58,9 +58,9 @@ cqlsh ${lines[0]} -e "copy team10.orderline (OL_W_ID, OL_D_ID, OL_O_ID, OL_NUMBE
 
 
 # Load Item_by_Warehouse_District
-cqlsh ${lines[0]} -e "copy team10.district (d_w_id, d_id) TO '/home/stuproj/cs4224j/Team10/data-files/order-line02.csv'";
+cqlsh ${lines[0]} -e "copy team10.district (d_w_id, d_id) TO '~/Team10/data-files/order-line02.csv'";
 
-cqlsh ${lines[0]} -e "copy team10.item_by_warehouse_district (w_id, d_id) FROM '/home/stuproj/cs4224j/Team10/data-files/order-line02.csv';"
+cqlsh ${lines[0]} -e "copy team10.item_by_warehouse_district (w_id, d_id) FROM '~/Team10/data-files/order-line02.csv';"
 
 ./LoadItemByWarehouseDistrictData.py ${lines[0]}
 

@@ -17,21 +17,21 @@ cd /temp/apache-cassandra-3.11.0/bin
 
 echo -ne "Loading WAREHOUSE, DISTRICT, ORDER-LINE, STOCK-ITEM, PAYMENT_BY_CUSTOMER, ITEM_BY_WAREHOUSE_DISTRICT and ORDER_BY_DESC, ORDER_BY_ASC data\n"
 
-cqlsh ${lines[0]} -e "copy team10.district from '/home/stuproj/cs4224j/Team10/data-files-backup/district.csv';"
+cqlsh ${lines[0]} -e "copy team10.district from '~/Team10/data-files-backup/district.csv';"
 
-cqlsh ${lines[0]} -e "copy team10.warehouse from '/home/stuproj/cs4224j/Team10/data-files-backup/warehouse.csv'"
+cqlsh ${lines[0]} -e "copy team10.warehouse from '~/Team10/data-files-backup/warehouse.csv'"
 
-cqlsh ${lines[0]} -e "copy team10.item_by_warehouse_district FROM '/home/stuproj/cs4224j/Team10/data-files-backup/item_by_warehouse_district.csv';"
+cqlsh ${lines[0]} -e "copy team10.item_by_warehouse_district FROM '~/Team10/data-files-backup/item_by_warehouse_district.csv';"
 
-cqlsh ${lines[0]} -e "copy team10.order_by_desc from '/home/stuproj/cs4224j/Team10/data-files-backup/order_by_desc.csv'"
+cqlsh ${lines[0]} -e "copy team10.order_by_desc from '~/Team10/data-files-backup/order_by_desc.csv'"
 
-cqlsh ${lines[0]} -e "copy team10.order_by_asc from '/home/stuproj/cs4224j/Team10/data-files-backup/order_by_asc.csv'"
+cqlsh ${lines[0]} -e "copy team10.order_by_asc from '~/Team10/data-files-backup/order_by_asc.csv'"
 
-cqlsh ${lines[0]} -e "copy team10.orderline from '/home/stuproj/cs4224j/Team10/data-files-backup/orderline.csv'"
+cqlsh ${lines[0]} -e "copy team10.orderline from '~/Team10/data-files-backup/orderline.csv'"
 
-cqlsh ${lines[0]} -e "copy team10.stockitem from '/home/stuproj/cs4224j/Team10/data-files-backup/stockitem.csv'"
+cqlsh ${lines[0]} -e "copy team10.stockitem from '~/Team10/data-files-backup/stockitem.csv'"
 
-cqlsh ${lines[0]} -e "copy team10.payment_by_customer from '/home/stuproj/cs4224j/Team10/data-files-backup/payment_by_customer.csv'"
+cqlsh ${lines[0]} -e "copy team10.payment_by_customer from '~/Team10/data-files-backup/payment_by_customer.csv'"
 
 
 
