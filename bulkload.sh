@@ -14,7 +14,7 @@ IFS=$'\n' read -d '' -r -a lines < nodeList.txt
 cd /temp/apache-cassandra-3.11.0/bin
 ./cqlsh ${lines[0]} -f ~/Team10/schema.cql
 
-echo -ne "Loading WAREHOUSE, DISTRICT, ORDER-LINE, STOCK-ITEM, PAYMENT_BY_CUSTOMER ITEM_BY_WAREHOUSE_DISTRICT and ORDER_BY_DESC, ORDER_BY_ASC data\n"
+echo -ne "Loading WAREHOUSE, DISTRICT, ORDER-LINE, STOCK-ITEM, PAYMENT_BY_CUSTOMER, ITEM_BY_WAREHOUSE_DISTRICT and ORDER_BY_DESC, ORDER_BY_ASC data\n"
 
 cd ~/Team10/loadData
 chmod +x *.py
