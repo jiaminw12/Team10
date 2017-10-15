@@ -72,7 +72,7 @@ cqlsh ${lines[0]} -e "SELECT max(O_ID), sum(O_OL_CNT) FROM team10.order_by_asc;"
 echo -ne "5. SELECT sum(OL_AMOUNT), sum(OL_QUANTITY) FROM team10.orderline ... \n"
 cqlsh ${lines[0]} -e "SELECT sum(OL_AMOUNT), sum(OL_QUANTITY) FROM team10.orderline;"
 
-echo -ne "6. SELECT sum(S_QUANTITY) FROM team10.item_by_warehouse_district ... \n"
+echo -ne "6. SELECT sum(S_QUANTITY) FROM team10.stockitem ... \n"
 cqlsh ${lines[0]} -e "SELECT sum(S_QUANTITY) FROM team10.stockitem;"
 
 echo -ne "7. SELECT sum(S_YTD), sum(S_ORDER_CNT), sum(S_REMOTE_CNT) FROM team10.stockitem ... \n"
