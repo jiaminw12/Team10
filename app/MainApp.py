@@ -91,7 +91,6 @@ connect = Connect('team10', sys.argv[3])
 session = connect.getSession()
 
 filePath = '../xact-files/%s' % sys.argv[1];
-#filePath = '../xact-test/%s' % sys.argv[1];
 consistencyLevel = sys.argv[2] # 1 - one, 2 - QUORUM
 start_time = time.time()
 with open(filePath, 'r+') as myFile:
